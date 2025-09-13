@@ -12,16 +12,16 @@
     <header>
       <nav>
         <h1 class="logo">zaiki's Portfolio</h1>
-        <div>
-          <button id="theme-toggle" class="theme button">
-            <span>Toggle Theme</span>
-          </button>
-        </div>
         <ul class="nav-links">
           <li><a href="#about">About</a></li>
           <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#contactsection">Contact</a></li>
         </ul>
+        <div>
+          <button id="theme-toggle" class="themebutton">
+            <span class="label">Toggle Theme</span>
+          </button>
+        </div>
       </nav>
     </header>
 
@@ -34,55 +34,57 @@
     <!-- About Section -->
     <section id="about" class="about">
       <h2>About Me</h2>
-      <p>
-        I’m a passionate developer who loves creating clean and simple designs
-        with functionality in mind. Always eager to learn and work on exciting
-        projects.
-      </p>
+      <div class="about-block">
+        <p>
+          I’m a passionate developer who loves creating clean and simple designs
+          with functionality in mind. Always eager to learn and work on exciting
+          projects.
+        </p>
+      </div>
     </section>
-
     <hr />
 
     <!-- Projects Section -->
     <section id="projects" class="projects">
       <h2>Projects</h2>
       <div class="project-list">
-        <div class="project-card">
-          <h3>Project One</h3>
+        <button class="project-card">
+          <h2>Project One</h2>
           <p>A brief description of project</p>
-        </div>
-        <div class="project-card">
-          <h3>Project Two</h3>
+        </button>
+        <button class="project-card">
+          <h2>Project Two</h2>
           <p>Some text about this cool project.</p>
-        </div>
-        <div class="project-card">
-          <h3>Project Three</h3>
+        </button>
+        <button class="project-card">
+          <h2>Project Three</h2>
           <p>Some text about this cool project.</p>
-        </div>
-        <div class="project-card">
-          <h3>Project Four</h3>
+        </button>
+        <button class="project-card">
+          <h2>Project Four</h2>
           <p>Some text about this cool project.</p>
-        </div>
+        </button>
       </div>
     </section>
-
     <hr />
 
     <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <section id="contactsection" class="contactsection">
       <h2>Contact</h2>
-      <p>
-        Email:
-        <a href="mailto:shamsulzire@example.com">shamsulzire@example.com</a>
-      </p>
-      <p>
-        LinkedIn:
-        <a href="https://www.linkedin.com/in/muhd-uzair-473333378/"
-          >muhd-uzair</a
-        >
-      </p>
-      <p>GitHub: <a href="https://github.com/zaiki505">zaiki505</a></p>
+      <button class="contactbutton">
+        Email
+        <a hidden href="mailto:shamsulzire@example.com">shamsulzire@example.com</a>
+      </button>
+      <button class="contactbutton">
+        LinkedIn
+        <a hidden href="https://www.linkedin.com/in/muhd-uzair-473333378/">muhd-uzair</a>
+      </button>
+      <button class="contactbutton">
+        GitHub
+        <a hidden href="https://github.com/zaiki505">zaiki505</a>
+      </button>
     </section>
+    <hr />
 
     <!-- Footer -->
     <footer>

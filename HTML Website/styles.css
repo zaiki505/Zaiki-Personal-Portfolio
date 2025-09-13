@@ -1,3 +1,11 @@
+:root{
+  --light: white;
+  --dark:#333;
+  --highlight: #7b00ff;
+  --lightFont:white;
+  --darkFont:#333;
+}
+
 /* Reset some defaults */
 * {
   margin: 0;
@@ -5,20 +13,25 @@
   box-sizing: border-box;
 }
 
+/*Light Theme*/
 body {
   font-family: monospace, serif;
   line-height: 1.6;
-  background: #f9f9f9;
-  color: #333;
+  background: lab(from var(--light) 97 a b);
+  color: var(--darkFont);
+  z-index: 1;
   transition: all 0.4s;
 }
 
 header {
   background: #454545;
-  color: white;
+  color: var(--light);
   padding: 1rem 2rem;
   align-items: center;
-  transition: all 0.5s;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  transition: all 0.5s ease-in-out;
 }
 
 nav {
@@ -35,113 +48,167 @@ nav {
 .nav-links {
   list-style: none;
   display: flex;
+  text-align: center;
   gap: 1rem;
 }
 
 .nav-links a {
-  color: #fff;
+  color: var(--lightFont);
   text-decoration: none;
   transition: color 0.4s;
 }
 
 .nav-links a:hover {
-  color: #007bff;
+  color:var(--highlight);
 }
 
 .hero {
   text-align: center;
-  padding: 3rem 2rem;
-  background: #eee;
-  color: #111;
+  padding: 4rem 2rem;
+  background: lab(from var(--light) 88 a b);
+  color: var(--darkFont);
 }
 
 .hero .highlight {
-  color: #007bff;
+  color: var(--highlight);
 }
 
 .about,
 .projects,
-.contact {
-  padding: 2rem;
+.contactsection {
+  padding: 5rem;
   text-align: center;
 }
 
-.contact a {
-  color: #333;
-  transition: 0.4s;
-}
-
-.contact a:hover {
-  color: #110de5;
+.about-block{
+  background: lab(from var(--light) l a b);
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  width:fit-content;
+  height: auto;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.6s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .projects .project-list {
   display: flex;
-  gap: 1rem;
+  gap: 3rem 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  transition: color 1s;
 }
 
-.project-card {
-  background: #fff;
+.project-card{
+  background: lab(from var(--light) l a b);
+  font-family: monospace;
   padding: 1rem;
-  border-radius: 8px;
+  border: none;
+  border-radius: 15px;
   width: 250px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: 0.6s;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.6s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .project-card:hover {
-  background: #d4d4d4;
+  background: lab(from var(--light) 90 a b);
+  color: lab(from var(--highlight) l a b);
   padding: 1rem;
   border-radius: 15px;
-  width: 250px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transform: translate(0px, -5px);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.6s;
 }
+
+.contactbutton {
+  background: lab(from var(--light) l a b);
+  font-family: monospace;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 10px;
+  width: fit-content;
+  height: 40px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.6s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.contactbutton:hover {
+  background: lab(from var(--light) 90 a b);
+  color: lab(from var(--highlight) l a b);
+  border-radius: 15px;
+  transform: translate(0px, -2px);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.6s ease-in-out;
+}
+
 
 footer {
   text-align: center;
   padding: 1rem;
   background: #454545;
-  color: #fff;
+  color: var(--lightFont);
   transition: 0.4s;
 }
 
-/*Light Theme*/
-.button {
+.themebutton {
   display: inline-block;
   border-radius: 8px;
   background-color: #2a2a2a;
-  border: white;
-  color: white;
+  border: none;
+  color: var(--lightFont);
   text-align: center;
   font-family: monospace;
   font-size: 15px;
   padding: 10px;
-  width: 120px;
-  transition: all 0.5s;
+  width: 100px;
   cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s ease, transform 0.5s ease, box-shadow 0.3s ease,
+    color 0.3s ease, border-radius 0.5s ease;
+  align-items: center;
+  justify-content: center;
 }
 
-.button:hover {
+.themebutton:hover {
   border-radius: 15px;
-  background-color: #000;
+  background-color: lab(from var(--dark) -88 a b);
+  transform: translateY(4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Dark Theme */
-body.dark .button {
-  background: white;
+.themebutton:active {
+  transform: translateY(-4px) scale(0.9);
+  box-shadow: 0 2px 6px rgb(0, 0, 0);
+}
+
+/* Dark Theme*/
+body.dark .themebutton {
+  background: lab(from var(--lightFont) 80 a b);
   color: #333;
 }
 
-body.dark .button:hover {
+body.dark .themebutton:hover {
   border-radius: 15px;
-  background-color: #d4d4d4;
+  background-color: var(--light);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.25);
+}
+
+body.dark .themebutton:active {
+  transform: translateY(4px) scale(0.9);
+  box-shadow: 0 -2px 5px rgb(255, 255, 255);
 }
 
 body.dark {
-  background: #222;
-  color: #f9f9f9;
+  background: lab(from var(--dark) 12 a b);
+  color: var(--lightFont);
 }
 
 body.dark header,
@@ -149,16 +216,22 @@ body.dark footer {
   background: #111;
 }
 
-body.dark .project-card {
-  background: #333;
+body.dark .project-card,
+body.dark .about-block,
+body.dark .contactbutton {
+  background: var(--dark);
+  color: var(--lightFont);
 }
 
-body.dark .contact a {
-  color: #f9f9f9;
+body.dark .project-card:hover {
+  box-shadow: 0 5px 20px lab(from var(--highlight) 40 a b);
+  background-color: lab(from var(--dark) 25 a b);
 }
 
-body.dark .contact a:hover {
-  color: #8886ed;
+body.dark .contactbutton:hover {
+  color: lab(from var(--highlight) l a b);
+  box-shadow: 0 5px 20px lab(from var(--highlight) 40 a b);
+  background-color: lab(from var(--dark) 25 a b);
 }
 
 /* Smooth scroll */
