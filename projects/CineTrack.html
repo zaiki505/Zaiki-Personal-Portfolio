@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CineTrack - zaiki</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.jpeg" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1 class="logo">
+          <a data-no-squish href="../index.html">
+            <img class="logo-img" src="../assets/logo.jpeg" alt="zaiki" />
+            <span class="logo-text">zaiki's Portfolio</span>
+          </a>
+        </h1>
+        <ul class="nav-links">
+          <li><a href="../about.html">About Me</a></li>
+          <li><a href="../education.html">Education</a></li>
+          <li><a href="../projects.html" aria-current="page">Projects</a></li>
+          <li><a href="../qualities.html">Qualities</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button data-no-squish id="theme-toggle" class="themebutton">
+            <span class="label">Theme</span>
+          </button>
+          <button
+            id="mobile-menu-toggle"
+            class="menubutton"
+            aria-label="Toggle Menu"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line class="middle-line" x1="3" y1="12" x2="21" y2="12"></line>
+              <line class="top-line" x1="3" y1="6" x2="21" y2="6"></line>
+              <line class="bottom-line" x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="case-study-page">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="../projects.html">Projects</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">CineTrack</span>
+      </nav>
+
+      <section class="case-hero">
+        <p class="section-kicker">C++ Console Application</p>
+        <h1>CineTrack: A Smart Movie Tracker System</h1>
+        <p>
+          A CLI movie-tracking tool implementing custom pointers and linked list
+          data structures to store, sort, and retrieve user watchlists
+          dynamically.
+        </p>
+      </section>
+
+      <section class="case-layout">
+        <div
+          class="media-frame media-platform"
+          aria-label="CineTrack CLI Application Screenshots"
+        >
+          <span
+            ><img
+              src="../assets/CineTrack/cli-app-mockup.jpg"
+              alt="CineTrack Mockup 1"
+          /></span>
+          <span
+            ><img
+              src="../assets/CineTrack/cli-app-mockup2.jpg"
+              alt="CineTrack Mockup 2"
+          /></span>
+          <span
+            ><img
+              src="../assets/CineTrack/cli-app-mockup3.jpg"
+              alt="CineTrack Mockup 3"
+          /></span>
+        </div>
+
+        <div class="case-panel">
+          <h2>Project Overview</h2>
+          <p>
+            CineTrack addresses the need for film enthusiasts to log, filter,
+            and structure their watched/to-watch movie catalogs. Instead of
+            using standard containers like standard vectors, this program builds
+            a dynamic memory watchlist utilizing custom Linked Lists in C++,
+            detailing pointer manipulation and sorting methodologies.
+          </p>
+          <dl class="meta-list">
+            <div>
+              <dt>Role</dt>
+              <dd>Backend Developer &amp; Data Structures Designer</dd>
+            </div>
+            <div>
+              <dt>Tools</dt>
+              <dd>
+                C++, Custom Linked Lists, Searching &amp; Sorting Algorithms,
+                Git
+              </dd>
+            </div>
+            <div>
+              <dt>Duration</dt>
+              <dd>Semester 1 Project (2024)</dd>
+            </div>
+            <div>
+              <dt>Full Report</dt>
+              <dd>
+                <a
+                  class="external-link"
+                  href="../reports/CineTrack Report.pdf"
+                  target="_blank"
+                  >View PDF Report</a
+                >
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Key Features</h2>
+        <ul>
+          <li>
+            <strong>Dynamic Memory Watchlist:</strong> Allocates list nodes
+            on-the-fly, allowing addition/deletion of entries without size
+            limits.
+          </li>
+          <li>
+            <strong>Data Filtering:</strong> Integrated linear search algorithms
+            to instantly filter movies by name, genre, rating or release year.
+          </li>
+          <li>
+            <strong>Watchlist Sorting:</strong> Bubble Sort algorithms sorting
+            nodes alphabetically or by rating/release date.
+          </li>
+          <li>
+            <strong>Persistent Storage:</strong> Read/write modules that load
+            and store watchlists in file formats, keeping data across
+            executions.
+          </li>
+        </ul>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Algorithms &amp; Custom Structures</h2>
+        <ul>
+          <li>
+            <strong>Pointer Manipulation:</strong> Created class node structs
+            referencing next/previous node pointers to maintain node list
+            connections.
+          </li>
+          <li>
+            <strong>Sorting Link Node Exchanges:</strong> Performed node pointer
+            swaps directly rather than copy-assigning object data values,
+            maximizing efficiency.
+          </li>
+          <li>
+            <strong>Resource Cleanups:</strong> Wrote custom destructors
+            traversing the nodes recursively to deallocate dynamic memory
+            buffers securely.
+          </li>
+        </ul>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Learning Outcomes</h2>
+        <p>
+          Gained deep-level of understanding for dynamic memory allocation and
+          pointer logic. Learned structural advantages of linked lists,
+          implemented algorithmic sorting, and developed functional file stream
+          pipelines for persistent console applications.
+        </p>
+      </section>
+
+      <div class="back-link-container">
+        <a class="back-link" href="../projects.html">Back to Projects</a>
+      </div>
+    </main>
+
+    <footer>
+      <small>&copy; 2026 zaiki. All rights reserved.</small>
+    </footer>
+
+    <script src="../script.js"></script>
+  </body>
+</html>

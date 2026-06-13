@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Homepage - zaiki's Portfolio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.jpeg">
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <h1 class="logo">
+          <a data-no-squish href="index.html">
+            <img class="logo-img" src="assets/logo.jpeg" alt="zaiki" />
+            <span class="logo-text">zaiki's Portfolio</span>
+          </a>
+        </h1>
+      
+        <ul class="nav-links">
+          <li><a href="about.html">About Me</a></li>
+          <li><a href="education.html">Education</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="qualities.html">Qualities</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      
+        <div class="nav-actions">
+          <button data-no-squish id="theme-toggle" class="themebutton">
+            <span class="label">Theme</span>
+          </button>
+          <button id="mobile-menu-toggle" class="menubutton" aria-label="Toggle Menu">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <line class="middle-line" x1="3" y1="12" x2="21" y2="12"></line>
+              <line class="top-line" x1="3" y1="6" x2="21" y2="6"></line>
+              <line class="bottom-line" x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="home-page">
+      <!-- Hero Section -->
+      <section class="hero hero-modern">
+        <div class="hero-content">
+          <p class="hero-greeting">Hi there 👋, I'm</p>
+          <h2 class="hero-title">Muhd <span class="highlight text-gradient">Uzair</span></h2>
+          <p class="hero-subtitle">Aspiring Web & App Developer &middot; Designer &middot; Creator</p>
+          <p class="hero-description">I strive to craft clean, minimalist, and functional digital experiences with a focus on UI/UX.</p>
+          <div class="hero-ctas">
+            <a href="#projects" class="cta-primary">View My Work</a>
+            <a href="#contactsection" class="cta-secondary">Get in Touch</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section (Bento Grid) -->
+      <section id="about" class="about bento-section">
+        <h2 class="section-title">About Me</h2>
+        <div class="bento-grid">
+          <a href="about.html" class="bento-card bento-card-main" aria-label="Read full about me">
+            <div class="bento-content">
+              <h3>Who I Am</h3>
+              <p>
+                I'm a passionate developer who loves creating clean and simple
+                designs with functionality in mind. Always eager to learn and work
+                on exciting projects.
+              </p>
+              <span class="bento-link-text">Read full story &rarr;</span>
+            </div>
+          </a>
+          <a href="about.html#skills" class="bento-card bento-card-skills">
+            <div class="bento-content">
+              <h3>Core Tools</h3>
+              <div class="bento-skills">
+                <span>HTML</span>
+                <span>CSS</span>
+                <span>JavaScript</span>
+                <span>C++</span>
+                <span>Java</span>
+                <span>Git</span>
+                <span>MySQL</span>
+              </div>
+            </div>
+          </a>
+          <a href="education.html" class="bento-card bento-card-edu">
+            <div class="bento-content">
+              <h3>Education</h3>
+              <p><strong>BSc. Computer Science</strong></p>
+              <p class="text-sub">Interactive Media</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Projects Section -->
+      <section id="projects" class="projects modern-projects">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="project-grid">
+          <a class="project-card-modern" href="projects/Attention Detector.html">
+            <div class="project-visual bg-gradient-1">
+              <span class="visual-emoji">👁️</span>
+            </div>
+            <div class="project-details">
+              <div class="project-tags">
+                <span class="tag">Web App</span>
+              </div>
+              <h4>Attention Monitoring Detector</h4>
+              <p>
+                A machine learning-based solution to monitor user attention and
+                provide actionable insights.
+              </p>
+            </div>
+          </a>
+          <a class="project-card-modern" href="projects/Workshop 1.html">
+            <div class="project-visual bg-gradient-1">
+              <span class="visual-emoji">🏠</span>
+            </div>
+            <div class="project-details">
+              <div class="project-tags">
+                <span class="tag">Console Application</span>
+                <span class="tag">Full-Stack System</span>
+              </div>
+              <h4>House Rental Management System</h4>
+              <p>A comprehensive rental property management system developed using C++ and MySQL.</p>
+            </div>
+          </a>
+          <a class="project-card-modern" href="projects/CineTrack.html">
+            <div class="project-visual bg-gradient-3">
+              <span class="visual-emoji">🎞️</span>
+            </div>
+            <div class="project-details">
+              <div class="project-tags">
+                <span class="tag">Command Line</span>
+              </div>
+              <h4>CineTrack: A Smart Movie Tracker System</h4>
+              <p>
+                A command-line movie tracker to manage data dynamically using
+                linked lists and demonstrates searching and sorting.
+              </p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contactsection" class="contact-modern">
+        <div class="contact-banner">
+          <h2>Let's build something amazing together.</h2>
+          <p>I'm currently available for freelance work and open to new opportunities.</p>
+          <div class="contact-links">
+            <a class="contact-pill" href="mailto:shamsulzire@example.com">
+              <span class="icon">✉️</span> Email Me
+            </a>
+            <a class="contact-pill" href="https://www.linkedin.com/in/muhd-uzair-473333378/" target="_blank" rel="noopener noreferrer">
+              <span class="icon">💼</span> LinkedIn
+            </a>
+            <a class="contact-pill" href="https://github.com/zaiki505" target="_blank" rel="noopener noreferrer">
+              <span class="icon">⌨️</span> GitHub
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div><small>&copy; 2026 zaiki. All Rights Reserved.</small></div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
