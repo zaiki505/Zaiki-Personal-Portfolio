@@ -1,9 +1,9 @@
-:root{
+:root {
   --light: white;
-  --dark:#333;
+  --dark: #333;
   --highlight: #7b00ff;
-  --lightFont:white;
-  --darkFont:#333;
+  --lightFont: white;
+  --darkFont: #333;
 }
 
 /* Reset some defaults */
@@ -48,7 +48,7 @@ nav {
 .nav-links {
   list-style: none;
   display: flex;
-  text-align: center;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -59,7 +59,7 @@ nav {
 }
 
 .nav-links a:hover {
-  color:var(--highlight);
+  color: var(--highlight);
 }
 
 .hero {
@@ -80,11 +80,11 @@ nav {
   text-align: center;
 }
 
-.about-block{
+.about-block {
   background: lab(from var(--light) l a b);
   padding: 2rem 3rem;
   border-radius: 15px;
-  width:fit-content;
+  width: fit-content;
   height: auto;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.6s ease;
@@ -100,7 +100,7 @@ nav {
   transition: color 1s;
 }
 
-.project-card{
+.project-card {
   background: lab(from var(--light) l a b);
   font-family: monospace;
   padding: 1rem;
@@ -147,7 +147,6 @@ nav {
   cursor: pointer;
   transition: all 0.6s ease-in-out;
 }
-
 
 footer {
   text-align: center;

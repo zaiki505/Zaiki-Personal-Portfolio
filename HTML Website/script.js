@@ -5,14 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const setDark = () => {
     document.body.classList.add("dark");
    // icon.textContent = "";
-    label.textContent = "Light";
+    label.textContent = "Light ☀️";
     localStorage.setItem("theme", "dark");
   };
 
   const setLight = () => {
     document.body.classList.remove("dark");
     //icon.textContent = "";
-    label.textContent = "Dark";
+    label.textContent = "Dark 🌙";
     localStorage.setItem("theme", "light");
   };
 

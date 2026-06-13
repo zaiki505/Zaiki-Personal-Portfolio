@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Network Design for Cyber Cat Café - zaiki</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.jpeg" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1 class="logo">
+          <a data-no-squish href="../index.html">
+            <img class="logo-img" src="../assets/logo.jpeg" alt="zaiki" />
+            <span class="logo-text">zaiki's Portfolio</span>
+          </a>
+        </h1>
+        <ul class="nav-links">
+          <li><a href="../about.html">About Me</a></li>
+          <li><a href="../education.html">Education</a></li>
+          <li><a href="../projects.html" aria-current="page">Projects</a></li>
+          <li><a href="../qualities.html">Qualities</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button data-no-squish id="theme-toggle" class="themebutton">
+            <span class="label">Theme</span>
+          </button>
+          <button
+            id="mobile-menu-toggle"
+            class="menubutton"
+            aria-label="Toggle Menu"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line class="middle-line" x1="3" y1="12" x2="21" y2="12"></line>
+              <line class="top-line" x1="3" y1="6" x2="21" y2="6"></line>
+              <line class="bottom-line" x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="case-study-page">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="../projects.html">Projects</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">Network Design</span>
+      </nav>
+
+      <section class="case-hero">
+        <p class="section-kicker">Network Architecture &amp; Engineering</p>
+        <h1>Network Design for Cyber Cat Café</h1>
+        <p>
+          A highly secure, segmented network architecture designed for a
+          commercial entertainment venue hosting public Wi-Fi, gaming setups,
+          and IoT devices.
+        </p>
+      </section>
+
+      <section class="case-layout">
+        <div
+          class="media-frame media-platform"
+          aria-label="Network Design Diagrams"
+        >
+          <span
+            ><img
+              src="../assets/Cyber Cat Cafe/3c-diagram.jpg"
+              alt="Network Diagram 1"
+          /></span>
+          <span
+            ><img
+              src="../assets/Cyber Cat Cafe/3c-diagram2.jpg"
+              alt="Network Diagram 2"
+          /></span>
+          <span
+            ><img
+              src="../assets/Cyber Cat Cafe/3c-diagram3.jpg"
+              alt="Network Diagram 3"
+          /></span>
+        </div>
+
+        <div class="case-panel">
+          <h2>Project Overview</h2>
+          <p>
+            Designed a comprehensive, scalable network topology for a fictional
+            Cyber Cat Café. The project addresses concurrent connections for
+            gaming consoles, POS machines, IoT surveillance cameras (for
+            monitoring the cats), and high-bandwidth guest Wi-Fi, using VLSM
+            subnetting and access-list policies for separation.
+          </p>
+          <dl class="meta-list">
+            <div>
+              <dt>Role</dt>
+              <dd>Leader of the Project / Network Architect / Security Engineer</dd>
+            </div>
+            <div>
+              <dt>Tools</dt>
+              <dd>
+                Packet Tracer, Subnetting (CIDR/VLSM), VLANs, IP Routing, DHCP, DNS
+              </dd>
+            </div>
+            <div>
+              <dt>Duration</dt>
+              <dd>Group Project (2025)</dd>
+            </div>
+            <div>
+              <dt>Full Design</dt>
+              <dd>
+                <a
+                  class="external-link"
+                  href="https://sites.google.com/view/3ce-cybercatcafe/home"
+                  target="_blank"
+                  >View Project Webpage</a
+                >
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Network Topology &amp; VLAN Setup</h2>
+        <ul>
+          <li>
+            <strong>Virtual LAN Isolation:</strong> Created distinct logical
+            subnets (VLANs) to prevent guests from accessing sensitive admin
+            point-of-sale databases.
+          </li>
+          <li>
+            <strong>VLSM IP Allocation:</strong> Subnetted a Class C network
+            space efficiently, allocating small pools for static routing links
+            and larger blocks for clients.
+          </li>
+        </ul>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Routing Protocols &amp; Security</h2>
+        <ul>
+          <li>
+            <strong>Dynamic Routing:</strong> Configured Open Shortest Path
+            First (OSPF) to link multi-area routers and support rapid failover
+            converges.
+          </li>
+          <li>
+            <strong>DHCP &amp; DNS Services:</strong> Set up dedicated server
+            nodes providing dynamic lease updates and local domain resolution
+            services.
+          </li>
+        </ul>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Learning Outcomes</h2>
+        <p>
+          Mastered enterprise-level IP subnet design and dynamic routing
+          protocol deployments. Developed practical knowledge of VLAN tagging,
+          access lists, and subnetting algorithms, optimizing traffic throughput
+          for bandwidth-intensive environments.
+        </p>
+      </section>
+
+      <div class="back-link-container">
+        <a class="back-link" href="../projects.html">Back to Projects</a>
+      </div>
+    </main>
+
+    <footer>
+      <small>&copy; 2026 zaiki. All rights reserved.</small>
+    </footer>
+
+    <script src="../script.js"></script>
+  </body>
+</html>
