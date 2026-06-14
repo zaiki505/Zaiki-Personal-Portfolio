@@ -126,3 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+window.addEventListener("pageshow", () => {
+  document.body.classList.remove("exit");
+});
