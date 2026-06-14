@@ -1840,7 +1840,6 @@ body.light .back-link:active {
 }
 
 .resume-link {
-  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   color: var(--highlight);
