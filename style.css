@@ -2390,7 +2390,7 @@ body.light .status-desc {
   justify-self: start;
   border: none;
   border-radius: 8px;
-  background: lab(from var(--lightFont) 50 a b);
+  background: lab(from var(--lightFont) 100 a b);
   color: #333;
   cursor: pointer;
   font: inherit;
