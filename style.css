@@ -745,12 +745,16 @@ body.light .skill-list span:hover {
   flex-shrink: 0;
   border-radius: 12px;
   background: rgba(255, 255, 255, 1);
-  border: 1px dashed rgba(255, 255, 255, 0.5);
+  border: 1px dashed rgba(0, 0, 0, 0.8);
   display: flex;
   overflow: hidden;
   border-radius: 20%;
   align-items: center;
   justify-content: center;
+}
+
+.body.light .institution-icon {
+  border: 1px dashed rgba(0, 0, 0, 0.2);
 }
 
 .institution-logo {
