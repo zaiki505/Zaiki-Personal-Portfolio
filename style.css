@@ -2771,7 +2771,7 @@ body.light .themebutton:active {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 760px) {
   .themebutton {
     min-width: 36px;
     min-height: 36px;
