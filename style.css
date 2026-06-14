@@ -2740,6 +2740,41 @@ body.light .themebutton:active {
   box-shadow: 0 -2px 5px rgb(255, 255, 255);
 }
 
+.themebutton::before {
+  content: "🌙";
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .themebutton {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    border-radius: 20%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .themebutton .label {
+    display: none;
+  }
+
+  .themebutton::before {
+    display: block;
+    font-size: 0.80rem;
+  }
+
+  .themebutton[data-theme-icon="moon"]::before {
+    content: "🌙";
+    transition: content 0.5s ease;
+  }
+
+  .themebutton[data-theme-icon="sun"]::before {
+    content: "☀️";
+    transition: content 0.5s ease;
+  }
+}
+
 /* Layout helpers and Projects grid */
 .container {
   max-width: 1200px;
