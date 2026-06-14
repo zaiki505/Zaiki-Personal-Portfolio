@@ -1536,10 +1536,6 @@ body.light .cgpa-sem-label {
   color: rgba(28, 28, 28, 0.45);
 }
 
-body.light .cgpa-value {
-  color: var(--darkFont);
-}
-
 body.light .cgpa-value--pending {
   color: rgba(28, 28, 28, 0.3);
 }
