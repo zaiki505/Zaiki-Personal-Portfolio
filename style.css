@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&isplay=swap');
+
 :root {
   --light: rgb(255, 255, 255);
   --dark: #333;
@@ -124,7 +126,7 @@ span.ui-clicked:not([style*="display"]) {
 
 /*Dark Theme (DEFAULT)*/
 body {
-  font-family: monospace, serif;
+  font-family: 'JetBrains Mono', serif;
   line-height: 1.6;
   background: lab(from var(--dark) 12 a b);
   color: var(--lightFont);
@@ -1811,7 +1813,7 @@ body.light .external-link:hover {
   border-radius: 8px;
   border: none;
   text-align: center;
-  font-family: monospace;
+  font-weight: bolder;
   font-size: clamp(17px, 1.2vw, 13px);
   padding: clamp(5px, 0.8vw, 8px) clamp(8px, 1.2vw, 12px);
   min-width: 100px;
@@ -2085,8 +2087,6 @@ body.light .bar-bg {
   background: rgba(0, 0, 0, 0.45);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  font-family: monospace;
-  /* vertical | horizontal */
   padding: clamp(0.9rem, 1.6vw, 1.25rem) clamp(1rem, 2vw, 1.75rem);
   border: none;
   border-radius: 15px;
@@ -2188,7 +2188,7 @@ body.light .bar-bg {
   background: rgba(0, 0, 0, 0.45);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  font-family: monospace;
+  font-weight: bolder;
   padding: 0.6rem;
   border: none;
   border-radius: 10px;
@@ -2471,9 +2471,10 @@ footer {
   border-radius: 8px;
   background-color: #2a2a2a;
   border: none;
+  font-weight: bolder;
   color: var(--lightFont);
   text-align: center;
-  font-family: monospace;
+  font-family: 'JetBrains Mono';
   font-size: clamp(11px, 1.2vw, 13px);
   padding: clamp(5px, 0.8vw, 8px) clamp(8px, 1.2vw, 12px);
   min-width: 100px;
@@ -2550,10 +2551,6 @@ body.light footer {
   background-color: var(--light);
   color: var(--darkFont);
   border-color: rgba(0, 0, 0, 0.08);
-}
-
-body.light header {
-  color: var(--darkFont);
 }
 
 body.light .logo,
@@ -2932,7 +2929,7 @@ html {
   backdrop-filter: blur(19px);
   -webkit-backdrop-filter: blur(19px);
 
-  mask-image: linear-gradient(to top, transparent 0%, black 100%);
+  mask-image: linear-gradient(to top, transparent 0%, black 70%, black 100%);
   -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
 }
 
@@ -3010,6 +3007,7 @@ html {
 .hero .cta-primary:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 28px rgba(167, 84, 255, 0.55);
+  color: rgba(var(--highlight) / 0.5);
   background: #d7abff;
 }
 

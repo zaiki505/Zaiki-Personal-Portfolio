@@ -16,14 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const setDark = () => {
     document.body.classList.remove("light");
-    if (label) label.textContent = "Theme Light";
+    if (label) label.textContent = "Theme Light ☀️";
     toggleBtn?.setAttribute("data-theme-icon", "moon");
     localStorage.setItem("theme", "dark");
   };
 
   const setLight = () => {
     document.body.classList.add("light");
-    if (label) label.textContent = "Theme Dark";
+    if (label) label.textContent = "Theme Dark 🌙";
     toggleBtn?.setAttribute("data-theme-icon", "sun");
     localStorage.setItem("theme", "light");
   };
