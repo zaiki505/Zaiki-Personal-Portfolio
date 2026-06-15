@@ -594,6 +594,9 @@ body.light .breadcrumb-current {
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.5rem;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
 .about-actions a {
@@ -1867,15 +1870,12 @@ body.light .back-link:active {
 }
 
 .resume-link {
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--highlight);
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 8px;
-  padding: 0.35rem 0.75rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: clamp(15rem, 1.8vw, 10rem);
+  justify-content: center;
+  font-weight: bolder;
+  background:  var(--highlight) !important;
+  color:var(--lightFont) !important;
+  box-shadow: 0 4px 20px rgba(167, 84, 255, 0.4);
 }
 
 .resume-sheet {
@@ -2499,7 +2499,7 @@ footer {
     transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   display: none;
   border-radius: 8px;
-  background-color: transparent;
+  background-color: lab(from var(--highlight) 50 a b);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--lightFont);
   padding: clamp(5px, 0.8vw, 8px);
@@ -2787,36 +2787,6 @@ body.light .themebutton:active {
 .themebutton::before {
   content: "🌙";
   display: none;
-}
-
-@media (max-width: 768px) {
-  .themebutton {
-    min-width: 36px;
-    min-height: 36px;
-    padding: 0;
-    border-radius: 20%;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .themebutton .label {
-    display: none;
-  }
-
-  .themebutton::before {
-    display: block;
-    font-size: 0.8rem;
-  }
-
-  .themebutton[data-theme-icon="moon"]::before {
-    content: "🌙";
-    transition: content 0.5s ease;
-  }
-
-  .themebutton[data-theme-icon="sun"]::before {
-    content: "☀️";
-    transition: content 0.5s ease;
-  }
 }
 
 /* Layout helpers and Projects grid */
@@ -3506,26 +3476,31 @@ body.light .contact-pill:hover {
   .modern-projects .project-grid,
   .project-page .project-grid {
     grid-template-columns: 1fr 1fr;
+    transition: all 0.3s ease;
   }
 }
 
 @media (max-width: 760px) {
   .bento-grid {
     grid-template-columns: 1fr;
+    transition: all 0.3s ease;
   }
 
   .bento-card-main {
     grid-row: span 1;
+    transition: all 0.3s ease;
   }
 
   .modern-projects .project-grid,
   .project-page .project-grid {
     grid-template-columns: 1fr;
+    transition: all 0.3s ease;
   }
 
   .hero-ctas {
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s ease;
   }
 
   .cta-primary,
@@ -3533,6 +3508,7 @@ body.light .contact-pill:hover {
     width: 100%;
     max-width: 320px;
     justify-content: center;
+    transition: all 0.3s ease;
   }
 }
 
@@ -3554,6 +3530,37 @@ body.light .contact-pill:hover {
 }
 
 @media (max-width: 760px) {
+  .themebutton {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    border-radius: 20%;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .themebutton .label {
+    display: none;
+    transition: all 0.3s ease;
+  }
+
+  .themebutton::before {
+    display: block;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+  }
+
+  .themebutton[data-theme-icon="moon"]::before {
+    content: "🌙";
+    transition: content 0.5s ease;
+  }
+
+  .themebutton[data-theme-icon="sun"]::before {
+    content: "☀️";
+    transition: content 0.5s ease;
+  }
+
   .logo-text {
     max-width: 12rem;
     margin-left: 0.5rem;
@@ -3561,6 +3568,7 @@ body.light .contact-pill:hover {
     filter: blur(0);
     transform: translateX(0);
     pointer-events: auto;
+    transition: all 0.3s ease;
   }
 
   nav {
@@ -3657,6 +3665,7 @@ body.light .contact-pill:hover {
   .contact-page {
     width: min(calc(100% - 1rem), 1120px);
     padding-top: clamp(2rem, 8vw, 3rem);
+    transition: all 0.3s ease;
   }
 
   .about-profile,
@@ -3666,38 +3675,45 @@ body.light .contact-pill:hover {
   .resume-layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    transition: all 0.3s ease;
   }
 
   .timeline-item {
     grid-template-columns: 1fr;
+    transition: all 0.3s ease;
   }
 
   .edu-entry {
     grid-template-columns: 1.8rem 1fr;
     gap: 0.65rem;
+    transition: all 0.3s ease;
   }
 
   .edu-card-header {
     flex-wrap: wrap;
+    transition: all 0.3s ease;
   }
 
   .profile-photo {
     width: min(260px, 72vw);
     margin: 0 auto;
+    transition: all 0.3s ease;
   }
 
   .profile-copy,
   .about-hero {
     text-align: center;
+    transition: all 0.3s ease;
   }
 
-  .about-actions,
   .skill-list {
     justify-content: left;
+    transition: all 0.3s ease;
   }
 
   .contact-methods {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    transition: all 0.3s ease;
   }
 }
 
@@ -3709,10 +3725,12 @@ body.light .contact-pill:hover {
   .about-actions a {
     width: 100%;
     text-align: center;
+    transition: all 0.3s ease;
   }
 
   .contact-submit {
     width: 100%;
+    transition: all 0.3s ease;
   }
 
   .resume-header {
@@ -3721,10 +3739,12 @@ body.light .contact-pill:hover {
     align-items: stretch;
     gap: 1.25rem;
     text-align: center;
+    transition: all 0.3s ease;
   }
 
   .resume-contact-pills {
     justify-content: center;
+    transition: all 0.3s ease;
   }
 }
 
