@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&isplay=swap');
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&isplay=swap");
 
 :root {
   --light: rgb(255, 255, 255);
@@ -126,7 +126,7 @@ span.ui-clicked:not([style*="display"]) {
 
 /*Dark Theme (DEFAULT)*/
 body {
-  font-family: 'JetBrains Mono', serif;
+  font-family: "JetBrains Mono", serif;
   line-height: 1.6;
   background: lab(from var(--dark) 12 a b);
   color: var(--lightFont);
@@ -1873,8 +1873,8 @@ body.light .back-link:active {
   width: clamp(15rem, 1.8vw, 10rem);
   justify-content: center;
   font-weight: bolder;
-  background:  var(--highlight) !important;
-  color:var(--lightFont) !important;
+  background: var(--highlight) !important;
+  color: var(--lightFont) !important;
   box-shadow: 0 4px 20px rgba(167, 84, 255, 0.4);
 }
 
@@ -2468,24 +2468,25 @@ footer {
 
 .themebutton {
   display: inline-flex;
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: #2a2a2a;
   border: none;
   font-weight: bolder;
   color: var(--lightFont);
   text-align: center;
-  font-family: 'JetBrains Mono';
+  font-family: "JetBrains Mono";
   font-size: clamp(11px, 1.2vw, 13px);
   padding: clamp(5px, 0.8vw, 8px) clamp(8px, 1.2vw, 12px);
-  min-width: 100px;
+  min-width: 60px;
+  height: 36px;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   transition:
-    background 0.3s ease,
-    transform 0.5s ease,
-    box-shadow 0.3s ease,
-    color 0.3s ease,
-    border-radius 0.5s ease;
+    max-width 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.55s ease,
+    filter 0.8s ease,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   align-items: center;
   justify-content: center;
 }
@@ -2511,17 +2512,17 @@ footer {
 }
 
 .menubutton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: lab(from var(--highlight) 40 a b);
   border-radius: 12px;
 }
 
 body.light .menubutton {
   border-color: rgba(0, 0, 0, 0.15);
-  color: var(--darkFont);
+  background: lab(from var(--highlight) 55 a b);
 }
 
 body.light .menubutton:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background: lab(from var(--highlight) 40 a b);
 }
 
 .themebutton:hover {
@@ -3480,38 +3481,6 @@ body.light .contact-pill:hover {
   }
 }
 
-@media (max-width: 760px) {
-  .bento-grid {
-    grid-template-columns: 1fr;
-    transition: all 0.3s ease;
-  }
-
-  .bento-card-main {
-    grid-row: span 1;
-    transition: all 0.3s ease;
-  }
-
-  .modern-projects .project-grid,
-  .project-page .project-grid {
-    grid-template-columns: 1fr;
-    transition: all 0.3s ease;
-  }
-
-  .hero-ctas {
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.3s ease;
-  }
-
-  .cta-primary,
-  .cta-secondary {
-    width: 100%;
-    max-width: 320px;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
-}
-
 /* Responsive navigation pill */
 @media (max-width: 1120px) {
   .logo-text {
@@ -3529,7 +3498,7 @@ body.light .contact-pill:hover {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 780px) {
   .themebutton {
     min-width: 36px;
     min-height: 36px;
@@ -3615,7 +3584,7 @@ body.light .contact-pill:hover {
   }
 
   nav.menu-open .nav-links {
-    opacity: 1;
+    opacity: 1 !important;
     visibility: visible;
     transform: translateY(0) translateZ(0);
     pointer-events: auto;
@@ -3713,6 +3682,36 @@ body.light .contact-pill:hover {
 
   .contact-methods {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    transition: all 0.3s ease;
+  }
+
+  .bento-grid {
+    grid-template-columns: 1fr;
+    transition: all 0.3s ease;
+  }
+
+  .bento-card-main {
+    grid-row: span 1;
+    transition: all 0.3s ease;
+  }
+
+  .modern-projects .project-grid,
+  .project-page .project-grid {
+    grid-template-columns: 1fr;
+    transition: all 0.3s ease;
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .cta-primary,
+  .cta-secondary {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
     transition: all 0.3s ease;
   }
 }
