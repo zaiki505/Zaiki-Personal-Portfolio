@@ -20,7 +20,7 @@
           <li><a href="../about.html">About Me</a></li>
           <li><a href="../education.html">Education</a></li>
           <li><a href="../projects.html" aria-current="page">Projects</a></li>
-          <li><a href="../qualities.html">Qualities</a></li>
+          <li><a href="../qualities.html">Skills</a></li>
           <li><a href="../contact.html">Contact</a></li>
         </ul>
         <div class="nav-actions">
@@ -112,7 +112,14 @@
             <div>
               <dt>Tools</dt>
               <dd>
-                Python, TensorFlow.js, OpenCV, JavaScript, WebSockets, HTML/CSS
+                <div class="meta-tools-tags">
+                  <span class="meta-tool-tag">Python</span>
+                  <span class="meta-tool-tag">TensorFlow.js</span>
+                  <span class="meta-tool-tag">OpenCV</span>
+                  <span class="meta-tool-tag">JavaScript</span>
+                  <span class="meta-tool-tag">WebSockets</span>
+                  <span class="meta-tool-tag">HTML/CSS</span>
+                </div>
               </dd>
             </div>
             <div>
@@ -137,51 +144,52 @@
 
       <section class="hci-panel">
         <h2>Key Features</h2>
-        <ul>
-          <li>
-            <strong>Webcam Head Tracking:</strong> Real-time head pose
-            estimation without requiring external hardware calibrators.
-          </li>
-          <li>
-            <strong>Interactive Dashboard:</strong> High-performance graphing
-            showing session-wide attention distributions.
-          </li>
-          <li>
-            <strong>Privacy-First Processing:</strong> All video frames are
-            processed locally inside the user's browser, preventing server
-            transmission of sensitive data.
-          </li>
-        </ul>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Webcam Head Tracking</strong>
+              <span>Real-time, no external hardware</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Interactive Dashboard</strong>
+              <span>Session-wide attention distributions</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Privacy-First Processing</strong>
+              <span>All video processed locally in-browser</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>ML Technologies</h2>
-        <ul>
-          <li>
-            <strong>Computer Vision Pipelines:</strong> Facial landmark
-            detection using MediaPipe to accurately capture head posiitions and gaze vectors.
-          </li>
-          <li>
-            <strong>Classification Model:</strong> A custom Convolutional Neural
-            Network (CNN) trained to classify head orientations (Left, Right,
-            Center, Down).
-          </li>
-          <li>
-            <strong>WebAssembly Acceleration:</strong> Model weights executed
-            inside the browser using TensorFlow.js for low-latency client
-            inference.
-          </li>
-        </ul>
+        <div class="tech-concept-grid">
+          <div class="tech-concept-item">
+            <span class="concept-label">Computer Vision Pipelines</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">CNN Classification Model</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">WebAssembly Acceleration</span>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>Learning Outcomes</h2>
-        <p>
-          Strengthened skills in edge computing and lightweight machine learning
-          architecture. Designed robust responsive charts and handled browser
-          permissions securely for webcam streams, optimizing frames-per-second
-          processing for a smooth UI experience.
-        </p>
+        <div class="outcome-tags">
+          <span class="outcome-tag">Edge Computing</span>
+          <span class="outcome-tag">Lightweight ML</span>
+          <span class="outcome-tag">Responsive Charts</span>
+          <span class="outcome-tag">Browser Permissions</span>
+          <span class="outcome-tag">FPS Optimization</span>
+        </div>
       </section>
 
       <div class="back-link-container">

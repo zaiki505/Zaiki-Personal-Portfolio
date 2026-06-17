@@ -20,7 +20,7 @@
           <li><a href="../about.html">About Me</a></li>
           <li><a href="../education.html">Education</a></li>
           <li><a href="../projects.html" aria-current="page">Projects</a></li>
-          <li><a href="../qualities.html">Qualities</a></li>
+          <li><a href="../qualities.html">Skills</a></li>
           <li><a href="../contact.html">Contact</a></li>
         </ul>
         <div class="nav-actions">
@@ -106,7 +106,16 @@
             </div>
             <div>
               <dt>Tools</dt>
-              <dd>C++, MySQL, MySQL Connector/C++, OOP, SQL, Git</dd>
+              <dd>
+                <div class="meta-tools-tags">
+                  <span class="meta-tool-tag">C++</span>
+                  <span class="meta-tool-tag">MySQL</span>
+                  <span class="meta-tool-tag">MySQL Connector/C++</span>
+                  <span class="meta-tool-tag">OOP</span>
+                  <span class="meta-tool-tag">SQL</span>
+                  <span class="meta-tool-tag">Git</span>
+                </div>
+              </dd>
             </div>
             <div>
               <dt>Duration</dt>
@@ -140,57 +149,58 @@
 
       <section class="hci-panel">
         <h2>Key Features</h2>
-        <ul>
-          <li>
-            <strong>Role-Based Portals:</strong> Distinct workflows for
-            Landlords (managing listings), Tenants (searching and renting), and
-            Representatives (administrative validation).
-          </li>
-          <li>
-            <strong>Real-Time Database Sync:</strong> Uses MySQL Connector/C++
-            for dynamic queries, prepared statements, and transactional safety.
-          </li>
-          <li>
-            <strong>Tenancy Agreements &amp; Receipts:</strong> Automatically
-            creates rental contracts and calculates booking fees, including
-            discounts.
-          </li>
-          <li>
-            <strong>Robust Input Validation:</strong> Advanced string parsing
-            and input sanitation routines to prevent buffer overflows and SQL
-            injection.
-          </li>
-        </ul>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Role-Based Portals</strong>
+              <span>Landlord, Tenant, Representative</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Real-Time DB Sync</strong>
+              <span>MySQL Connector/C++ prepared statements</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Tenancy Agreements</strong>
+              <span>Auto contracts with fee calculation</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Input Validation</strong>
+              <span>SQL injection &amp; overflow prevention</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>Technologies &amp; Concepts</h2>
-        <ul>
-          <li>
-            <strong>Object-Oriented Programming (OOP):</strong> Classes,
-            inheritance, encapsulation, and composition to represent landlords,
-            tenants, and properties cleanly.
-          </li>
-          <li>
-            <strong>Relational DB Normalization:</strong> Database schema
-            normalized up to 3NF to avoid redundancy and enforce referential
-            integrity.
-          </li>
-          <li>
-            <strong>SQL Query Optimization:</strong> Structured joins,
-            transaction handling, and optimized indexes to minimize latency.
-          </li>
-        </ul>
+        <div class="tech-concept-grid">
+          <div class="tech-concept-item">
+            <span class="concept-label">Object-Oriented Programming</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">Relational DB Normalization (3NF)</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">SQL Query Optimization</span>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>Learning Outcomes</h2>
-        <p>
-          Gained deep proficiency in database-application integration. Learned
-          to design normalized schemas, handle connection pools, build robust
-          error-handling mechanisms for terminal-based user inputs, and
-          coordinate project files in Git.
-        </p>
+        <div class="outcome-tags">
+          <span class="outcome-tag">DB-App Integration</span>
+          <span class="outcome-tag">Schema Normalization</span>
+          <span class="outcome-tag">Connection Pools</span>
+          <span class="outcome-tag">Error Handling</span>
+          <span class="outcome-tag">Git Workflow</span>
+        </div>
       </section>
 
       <div class="back-link-container">

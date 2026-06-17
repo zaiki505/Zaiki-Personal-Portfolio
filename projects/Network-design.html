@@ -20,7 +20,7 @@
           <li><a href="../about.html">About Me</a></li>
           <li><a href="../education.html">Education</a></li>
           <li><a href="../projects.html" aria-current="page">Projects</a></li>
-          <li><a href="../qualities.html">Qualities</a></li>
+          <li><a href="../qualities.html">Skills</a></li>
           <li><a href="../contact.html">Contact</a></li>
         </ul>
         <div class="nav-actions">
@@ -106,12 +106,19 @@
           <dl class="meta-list">
             <div>
               <dt>Role</dt>
-              <dd>Leader of the Project / Network Architect / Security Engineer</dd>
+              <dd>Leader &middot; Network Architect &middot; Security Engineer</dd>
             </div>
             <div>
               <dt>Tools</dt>
               <dd>
-                Packet Tracer, Subnetting (CIDR/VLSM), VLANs, IP Routing, DHCP, DNS
+                <div class="meta-tools-tags">
+                  <span class="meta-tool-tag">Packet Tracer</span>
+                  <span class="meta-tool-tag">CIDR/VLSM</span>
+                  <span class="meta-tool-tag">VLANs</span>
+                  <span class="meta-tool-tag">IP Routing</span>
+                  <span class="meta-tool-tag">DHCP</span>
+                  <span class="meta-tool-tag">DNS</span>
+                </div>
               </dd>
             </div>
             <div>
@@ -135,44 +142,49 @@
 
       <section class="hci-panel">
         <h2>Network Topology &amp; VLAN Setup</h2>
-        <ul>
-          <li>
-            <strong>Virtual LAN Isolation:</strong> Created distinct logical
-            subnets (VLANs) to prevent guests from accessing sensitive admin
-            point-of-sale databases.
-          </li>
-          <li>
-            <strong>VLSM IP Allocation:</strong> Subnetted a Class C network
-            space efficiently, allocating small pools for static routing links
-            and larger blocks for clients.
-          </li>
-        </ul>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Virtual LAN Isolation</strong>
+              <span>Logical subnets, guest/admin separation</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>VLSM IP Allocation</strong>
+              <span>Efficient Class C subnetting</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>Routing Protocols &amp; Security</h2>
-        <ul>
-          <li>
-            <strong>Dynamic Routing:</strong> Configured Open Shortest Path
-            First (OSPF) to link multi-area routers and support rapid failover
-            converges.
-          </li>
-          <li>
-            <strong>DHCP &amp; DNS Services:</strong> Set up dedicated server
-            nodes providing dynamic lease updates and local domain resolution
-            services.
-          </li>
-        </ul>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>OSPF Dynamic Routing</strong>
+              <span>Multi-area, rapid failover</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>DHCP &amp; DNS Services</strong>
+              <span>Dynamic leases, domain resolution</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>Learning Outcomes</h2>
-        <p>
-          Mastered enterprise-level IP subnet design and dynamic routing
-          protocol deployments. Developed practical knowledge of VLAN tagging,
-          access lists, and subnetting algorithms, optimizing traffic throughput
-          for bandwidth-intensive environments.
-        </p>
+        <div class="outcome-tags">
+          <span class="outcome-tag">IP Subnet Design</span>
+          <span class="outcome-tag">OSPF Routing</span>
+          <span class="outcome-tag">VLAN Tagging</span>
+          <span class="outcome-tag">Access Lists</span>
+          <span class="outcome-tag">Traffic Optimization</span>
+        </div>
       </section>
 
       <div class="back-link-container">

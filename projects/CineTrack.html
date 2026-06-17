@@ -20,7 +20,7 @@
           <li><a href="../about.html">About Me</a></li>
           <li><a href="../education.html">Education</a></li>
           <li><a href="../projects.html" aria-current="page">Projects</a></li>
-          <li><a href="../qualities.html">Qualities</a></li>
+          <li><a href="../qualities.html">Skills</a></li>
           <li><a href="../contact.html">Contact</a></li>
         </ul>
         <div class="nav-actions">
@@ -111,8 +111,12 @@
             <div>
               <dt>Tools</dt>
               <dd>
-                C++, Custom Linked Lists, Searching &amp; Sorting Algorithms,
-                Git
+                <div class="meta-tools-tags">
+                  <span class="meta-tool-tag">C++</span>
+                  <span class="meta-tool-tag">Custom Linked Lists</span>
+                  <span class="meta-tool-tag">Search &amp; Sort Algorithms</span>
+                  <span class="meta-tool-tag">Git</span>
+                </div>
               </dd>
             </div>
             <div>
@@ -136,57 +140,58 @@
 
       <section class="hci-panel">
         <h2>Key Features</h2>
-        <ul>
-          <li>
-            <strong>Dynamic Memory Watchlist:</strong> Allocates list nodes
-            on-the-fly, allowing addition/deletion of entries without size
-            limits.
-          </li>
-          <li>
-            <strong>Data Filtering:</strong> Integrated linear search algorithms
-            to instantly filter movies by name, genre, rating or release year.
-          </li>
-          <li>
-            <strong>Watchlist Sorting:</strong> Bubble Sort algorithms sorting
-            nodes alphabetically or by rating/release date.
-          </li>
-          <li>
-            <strong>Persistent Storage:</strong> Read/write modules that load
-            and store watchlists in file formats, keeping data across
-            executions.
-          </li>
-        </ul>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Dynamic Memory Watchlist</strong>
+              <span>Node-based, unlimited entries</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Data Filtering</strong>
+              <span>Search by name, genre, rating, year</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Watchlist Sorting</strong>
+              <span>Bubble sort by rating or release date</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Persistent Storage</strong>
+              <span>File-based data across executions</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>Algorithms &amp; Custom Structures</h2>
-        <ul>
-          <li>
-            <strong>Pointer Manipulation:</strong> Created class node structs
-            referencing next/previous node pointers to maintain node list
-            connections.
-          </li>
-          <li>
-            <strong>Sorting Link Node Exchanges:</strong> Performed node pointer
-            swaps directly rather than copy-assigning object data values,
-            maximizing efficiency.
-          </li>
-          <li>
-            <strong>Resource Cleanups:</strong> Wrote custom destructors
-            traversing the nodes recursively to deallocate dynamic memory
-            buffers securely.
-          </li>
-        </ul>
+        <div class="tech-concept-grid">
+          <div class="tech-concept-item">
+            <span class="concept-label">Pointer Manipulation</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">Sorting via Node Swaps</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">Custom Memory Cleanup</span>
+          </div>
+        </div>
       </section>
 
       <section class="hci-panel">
         <h2>Learning Outcomes</h2>
-        <p>
-          Gained deep-level of understanding for dynamic memory allocation and
-          pointer logic. Learned structural advantages of linked lists,
-          implemented algorithmic sorting, and developed functional file stream
-          pipelines for persistent console applications.
-        </p>
+        <div class="outcome-tags">
+          <span class="outcome-tag">Dynamic Memory Allocation</span>
+          <span class="outcome-tag">Pointer Logic</span>
+          <span class="outcome-tag">Linked Lists</span>
+          <span class="outcome-tag">Algorithmic Sorting</span>
+          <span class="outcome-tag">File Stream Pipelines</span>
+        </div>
       </section>
 
       <div class="back-link-container">

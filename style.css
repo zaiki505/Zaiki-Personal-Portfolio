@@ -135,13 +135,77 @@ body {
   padding-top: 5rem;
 }
 
-body:not(.exit) .hero,
-body:not(.exit) .about,
-body:not(.exit) .projects,
-body:not(.exit) .contactsection,
-body:not(.exit) main,
+/* Layered "stack slide-in" — blur + slide from the top, layer by layer */
+@keyframes stackSlideIn {
+  from {
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(-44px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header keeps its translateX(-50%) centering while dropping in */
+@keyframes headerDropIn {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateX(-50%) translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+body:not(.exit):not(.nav-intro) header {
+  animation: headerDropIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+body:not(.exit) main > *,
 body:not(.exit) footer {
-  animation: slideInDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: stackSlideIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+body:not(.exit) main > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+body:not(.exit) main > *:nth-child(2) {
+  animation-delay: 0.18s;
+}
+body:not(.exit) main > *:nth-child(3) {
+  animation-delay: 0.26s;
+}
+body:not(.exit) main > *:nth-child(4) {
+  animation-delay: 0.34s;
+}
+body:not(.exit) main > *:nth-child(5) {
+  animation-delay: 0.42s;
+}
+body:not(.exit) main > *:nth-child(6) {
+  animation-delay: 0.5s;
+}
+body:not(.exit) main > *:nth-child(7) {
+  animation-delay: 0.58s;
+}
+body:not(.exit) main > *:nth-child(n + 8) {
+  animation-delay: 0.66s;
+}
+body:not(.exit) footer {
+  animation-delay: 0.55s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.exit) header,
+  body:not(.exit) main > *,
+  body:not(.exit) footer {
+    animation: none;
+  }
 }
 
 body.exit .hero,
@@ -294,6 +358,65 @@ nav > * {
   margin: 0;
   padding: 0;
   white-space: nowrap;
+  position: relative;
+}
+
+/* Gliding active-page pill indicator (desktop).
+   The outer element handles position (translate) + size, the inner fill
+   handles the squish so the two transforms don't collide. */
+.nav-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  /* bouncy glide between pages */
+  transition:
+    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    width 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.nav-indicator.is-ready {
+  opacity: 1;
+}
+
+.nav-indicator-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(167, 84, 255, 0.14);
+  border: 1px solid rgba(167, 84, 255, 0.28);
+  transform-origin: center;
+}
+
+/* squish stretch while travelling */
+.nav-indicator.is-gliding .nav-indicator-fill {
+  animation: navPillSquish 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes navPillSquish {
+  0% {
+    transform: scaleX(1) scaleY(1);
+  }
+  35% {
+    transform: scaleX(1.14) scaleY(0.82);
+  }
+  70% {
+    transform: scaleX(0.95) scaleY(1.07);
+  }
+  100% {
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
+/* Keep the links painted above the gliding indicator */
+.nav-links a {
+  z-index: 1;
 }
 
 .nav-actions {
@@ -321,8 +444,9 @@ nav > * {
 
 .nav-links a[aria-current="page"] {
   color: var(--highlight);
-  background: rgba(167, 84, 255, 0.12);
-  border: 1px solid rgba(167, 84, 255, 0.22);
+  /* The pill background is rendered by .nav-indicator on desktop */
+  background: transparent;
+  border: 1px solid transparent;
 }
 
 .nav-links a[aria-current="page"]::after {
@@ -1870,7 +1994,7 @@ body.light .back-link:active {
 }
 
 .resume-link {
-  width: clamp(15rem, 1.8vw, 10rem);
+  width: clamp(35rem, 1.8vw, 10rem);
   justify-content: center;
   font-weight: bolder;
   background: var(--highlight) !important;
@@ -2887,21 +3011,70 @@ html {
   pointer-events: none;
 }
 
+/* Progressive top blur — strongest at the very top, smoothly easing to none
+   downward. Three stacked backdrop-filter layers, each masked to its own band
+   so the blur radius ramps gradually instead of cutting off in one step. */
 .screen-top-blur {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 100px; /* how far down the blur extends */
+  height: 150px;
   pointer-events: none; /* Allows clicking elements underneath */
   z-index: 30;
 
-  /* The blur effect */
-  backdrop-filter: blur(19px);
-  -webkit-backdrop-filter: blur(19px);
+  /* Layer 1 — heaviest blur, hugging the very top */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  mask-image: linear-gradient(to bottom, black 0%, black 16%, transparent 46%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 16%,
+    transparent 46%
+  );
+}
 
-  mask-image: linear-gradient(to top, transparent 0%, black 70%, black 100%);
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 100%);
+/* Layer 2 — medium blur through the middle band */
+.screen-top-blur::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 12%,
+    black 40%,
+    transparent 72%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 12%,
+    black 40%,
+    transparent 72%
+  );
+}
+
+/* Layer 3 — faint blur fading out at the bottom edge */
+.screen-top-blur::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 42%,
+    black 72%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 42%,
+    black 72%,
+    transparent 100%
+  );
 }
 
 .hero-content {
@@ -2934,6 +3107,36 @@ html {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.hero-title .text-gradient {
+  background: linear-gradient(
+    110deg,
+    var(--highlight),
+    #c2a0f5,
+    var(--highlight)
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: heroGradientShimmer 11s ease-in-out infinite alternate;
+}
+
+@keyframes heroGradientShimmer {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title .text-gradient {
+    animation: none;
+  }
 }
 
 .hero-subtitle {
@@ -3564,15 +3767,20 @@ body.light .contact-pill:hover {
     border-radius: 14px;
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
     z-index: 100;
+    transform-origin: top center;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-12px) translateZ(0);
-    will-change: transform, opacity, filter;
+    transform: translateY(-8px) scaleY(0.82);
+    filter: blur(14px);
+    clip-path: inset(0 0 100% 0 round 14px);
+    will-change: transform, opacity, filter, clip-path;
     pointer-events: none;
     transition:
-      opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-      visibility 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.5s cubic-bezier(0.34, 1.4, 0.5, 1),
+      filter 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      clip-path 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   body.light .nav-links {
@@ -3586,9 +3794,52 @@ body.light .contact-pill:hover {
   nav.menu-open .nav-links {
     opacity: 1 !important;
     visibility: visible;
-    transform: translateY(0) translateZ(0);
+    transform: translateY(0) scaleY(1);
+    filter: blur(0);
+    clip-path: inset(0 0 0 0 round 14px);
     pointer-events: auto;
     width: clamp(10px, 80vw, 1080px);
+  }
+
+  @keyframes navItemReveal {
+    from {
+      opacity: 0;
+      filter: blur(6px);
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+
+  nav.menu-open .nav-links li {
+    animation: navItemReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  nav.menu-open .nav-links li:nth-child(1) {
+    animation-delay: 0.12s;
+  }
+  nav.menu-open .nav-links li:nth-child(2) {
+    animation-delay: 0.18s;
+  }
+  nav.menu-open .nav-links li:nth-child(3) {
+    animation-delay: 0.24s;
+  }
+  nav.menu-open .nav-links li:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+  nav.menu-open .nav-links li:nth-child(5) {
+    animation-delay: 0.36s;
+  }
+
+  .nav-indicator {
+    display: none;
+  }
+
+  .nav-links a[aria-current="page"] {
+    background: rgba(167, 84, 255, 0.12);
+    border: 1px solid rgba(167, 84, 255, 0.22);
   }
 
   .menubutton line {
@@ -3744,6 +3995,752 @@ body.light .contact-pill:hover {
   .resume-contact-pills {
     justify-content: center;
     transition: all 0.3s ease;
+  }
+}
+
+/* ==================== PROJECT PAGE ENHANCEMENTS ==================== */
+
+/* Feature cards grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: clamp(0.65rem, 1.5vw, 1rem);
+  margin-top: 0.75rem;
+}
+
+.feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: clamp(0.75rem, 2vw, 1.05rem);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.feature-card:hover {
+  background: rgba(167, 84, 255, 0.08);
+  border-color: rgba(167, 84, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+.feature-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.feature-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.feature-body strong {
+  font-size: clamp(0.84rem, 1.2vw, 0.92rem);
+  color: var(--lightFont);
+  font-weight: bold;
+}
+
+.feature-body span {
+  font-size: clamp(0.76rem, 1vw, 0.82rem);
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.45;
+}
+
+/* Tech concept pills */
+.tech-concept-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.tech-concept-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: clamp(0.79rem, 1.1vw, 0.87rem);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s ease;
+}
+
+.tech-concept-item:hover {
+  background: rgba(167, 84, 255, 0.1);
+  border-color: rgba(167, 84, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.concept-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.concept-label {
+  color: var(--lightFont);
+  font-weight: 500;
+}
+
+/* Learning outcome tags */
+.outcome-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.outcome-tag {
+  display: inline-flex;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(167, 84, 255, 0.1);
+  border: 1px solid rgba(167, 84, 255, 0.22);
+  color: var(--highlight);
+  font-size: clamp(0.78rem, 1.05vw, 0.84rem);
+  font-weight: bold;
+}
+
+/* Meta-list tool tags */
+.meta-tools-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.meta-tool-tag {
+  display: inline-flex;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+
+/* View More button - homepage projects section */
+.view-more-container {
+  text-align: center;
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.view-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 999px;
+  background: rgba(167, 84, 255, 0.1);
+  border: 1px solid rgba(167, 84, 255, 0.28);
+  color: var(--highlight);
+  font-weight: bold;
+  font-size: clamp(0.88rem, 1.3vw, 0.95rem);
+  text-decoration: none;
+  font-family: "JetBrains Mono", serif;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.view-more-btn:hover {
+  background: rgba(167, 84, 255, 0.18);
+  border-color: rgba(167, 84, 255, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(167, 84, 255, 0.22);
+}
+
+/* Light theme overrides - project enhancements */
+body.light .feature-card {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.07);
+}
+
+body.light .feature-card:hover {
+  background: rgba(167, 84, 255, 0.05);
+  border-color: rgba(167, 84, 255, 0.18);
+}
+
+body.light .feature-body strong {
+  color: var(--darkFont);
+}
+
+body.light .feature-body span {
+  color: rgba(28, 28, 28, 0.5);
+}
+
+body.light .tech-concept-item {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light .tech-concept-item:hover {
+  background: rgba(167, 84, 255, 0.06);
+  border-color: rgba(167, 84, 255, 0.2);
+}
+
+body.light .concept-label {
+  color: var(--darkFont);
+}
+
+body.light .outcome-tag {
+  background: rgba(167, 84, 255, 0.07);
+  border-color: rgba(167, 84, 255, 0.15);
+}
+
+body.light .meta-tool-tag {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: rgba(28, 28, 28, 0.75);
+}
+
+body.light .view-more-btn {
+  background: rgba(167, 84, 255, 0.06);
+  border-color: rgba(167, 84, 255, 0.2);
+}
+
+body.light .view-more-btn:hover {
+  background: rgba(167, 84, 255, 0.12);
+  border-color: rgba(167, 84, 255, 0.35);
+  box-shadow: 0 8px 22px rgba(167, 84, 255, 0.15);
+}
+
+/* ==================== CATEGORY FILTER BAR ==================== */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1.05rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: "JetBrains Mono", serif;
+  font-size: clamp(0.76rem, 1.1vw, 0.85rem);
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(167, 84, 255, 0.1);
+  border-color: rgba(167, 84, 255, 0.3);
+  color: var(--lightFont);
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: var(--highlight);
+  border-color: var(--highlight);
+  color: var(--lightFont);
+  box-shadow: 0 6px 18px rgba(167, 84, 255, 0.35);
+}
+
+.filter-count {
+  font-size: 0.72em;
+  opacity: 0.7;
+}
+
+.filtered-hidden {
+  display: none !important;
+}
+
+body.light .filter-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: rgba(28, 28, 28, 0.7);
+}
+
+body.light .filter-btn:hover {
+  background: rgba(167, 84, 255, 0.08);
+  border-color: rgba(167, 84, 255, 0.28);
+  color: var(--darkFont);
+}
+
+body.light .filter-btn.active {
+  color: lab(from var(--highlight) 30 a b);
+  background-color: rgba(215, 170, 255, 0.556);
+  box-shadow: 0 6px 18px rgba(167, 84, 255, 0.25);
+}
+
+/* ==================== SKILLS & COMPETENCY PAGE ==================== */
+
+.competency-section {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.competency-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.6rem;
+}
+
+.competency-section-head h3 {
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  color: var(--lightFont);
+  font-weight: bold;
+}
+
+.competency-section-head .section-sub {
+  font-size: clamp(0.76rem, 1.1vw, 0.85rem);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+body.light .competency-section-head {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light .competency-section-head h3 {
+  color: var(--darkFont);
+}
+
+body.light .competency-section-head .section-sub {
+  color: rgba(28, 28, 28, 0.45);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: clamp(0.65rem, 1.6vw, 1rem);
+}
+
+.skill-card-v2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: clamp(0.7rem, 1.8vw, 0.95rem);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.32);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.skill-card-v2:hover {
+  transform: translateY(-3px);
+  border-color: rgba(167, 84, 255, 0.3);
+  box-shadow: 0 14px 28px rgba(167, 84, 255, 0.16);
+}
+
+.skill-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--lightFont);
+}
+
+.skill-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.skill-card-v2.cat-languages .skill-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(167, 84, 255, 0.5),
+    rgba(123, 0, 255, 0.25)
+  );
+}
+
+.skill-card-v2.cat-tools .skill-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 140, 255, 0.45),
+    rgba(0, 80, 160, 0.25)
+  );
+}
+
+.skill-card-v2.cat-design .skill-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 100, 50, 0.45),
+    rgba(180, 40, 0, 0.25)
+  );
+}
+
+.skill-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.skill-card-name {
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  font-weight: bold;
+  color: var(--lightFont);
+  line-height: 1.2;
+}
+
+/* Proficiency tier blocks (grouped skills) */
+.skill-tier-block {
+  margin-top: clamp(1.25rem, 3vw, 1.85rem);
+}
+
+.skill-tier-block:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.skill-tier-block .skills-grid {
+  margin-top: 0.85rem;
+}
+
+.skill-card-cat {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+body.light .skill-card-cat {
+  color: rgba(28, 28, 28, 0.45);
+}
+
+.skill-card-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.skill-card-tier::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.skill-card-tier.advanced {
+  color: #10b981;
+}
+.skill-card-tier.advanced::before {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+}
+
+.skill-card-tier.intermediate {
+  color: #eab308;
+}
+.skill-card-tier.intermediate::before {
+  background: #eab308;
+  box-shadow: 0 0 6px rgba(234, 179, 8, 0.5);
+}
+
+.skill-card-tier.beginner {
+  color: #f97316;
+}
+.skill-card-tier.beginner::before {
+  background: #f97316;
+  box-shadow: 0 0 6px rgba(249, 115, 22, 0.5);
+}
+
+body.light .skill-card-v2 {
+  background: lab(from var(--light) l a b);
+  border-color: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.07);
+}
+
+body.light .skill-card-v2:hover {
+  border-color: rgba(167, 84, 255, 0.28);
+  box-shadow: 0 14px 28px rgba(167, 84, 255, 0.12);
+}
+
+body.light .skill-card-name {
+  color: var(--darkFont);
+}
+
+/* About page - Skills teaser card */
+.skills-teaser {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.skills-teaser:hover {
+  transform: translateY(-4px);
+  border-color: rgba(167, 84, 255, 0.3);
+  box-shadow: 0 14px 30px rgba(167, 84, 255, 0.16);
+}
+
+.skills-teaser-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1rem 0;
+}
+
+.skills-teaser-tags span {
+  border: 1px solid rgba(167, 84, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(167, 84, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+body.light .skills-teaser-tags span {
+  color: rgba(28, 28, 28, 0.8);
+}
+
+/* Quality cards: add category tag + filter support */
+.quality-card {
+  position: relative;
+}
+
+.quality-cat-tag {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 0.6rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(167, 84, 255, 0.12);
+  border: 1px solid rgba(167, 84, 255, 0.25);
+  color: var(--highlight);
+  font-size: 0.68rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ==================== LOGO → HOME AFFORDANCE ==================== */
+
+/* Custom animated tooltip revealing that the logo returns to the homepage */
+.logo a {
+  position: relative;
+}
+
+.logo a::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  white-space: nowrap;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(167, 84, 255, 0.16);
+  border: 1px solid rgba(167, 84, 255, 0.3);
+  color: var(--highlight);
+  opacity: 0;
+  transform: translateY(-4px) scale(0.96);
+  filter: blur(4px);
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.3s ease;
+}
+
+.logo a[data-tooltip]:hover::after,
+.logo a[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.logo a[aria-current="page"] {
+  cursor: default;
+}
+
+.logo a[aria-current="page"] .logo-text {
+  background: linear-gradient(
+    90deg,
+    var(--highlight),
+    #d48cff,
+    #7b5bff,
+    #d48cff,
+    var(--highlight)
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 8px rgba(167, 84, 255, 0.4));
+  animation: logoGradientShift 5s linear infinite;
+}
+
+.logo a[aria-current="page"]:hover .logo-text,
+.logo a[aria-current="page"] .logo-text:hover {
+  color: transparent;
+}
+
+@keyframes logoGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 250% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo a[aria-current="page"] .logo-text {
+    animation: none;
+  }
+}
+
+/* ==================== SCROLL-TO-TOP BUTTON (mobile) ==================== */
+
+.scroll-top-btn {
+  position: fixed;
+  right: clamp(1rem, 4vw, 1.5rem);
+  bottom: clamp(1rem, 4vw, 1.5rem);
+  width: 46px;
+  height: 46px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(167, 84, 255, 0.4);
+  border-radius: 50%;
+  background: var(--highlight);
+  color: var(--lightFont);
+  cursor: pointer;
+  z-index: 120;
+  box-shadow: 0 8px 22px rgba(167, 84, 255, 0.4);
+  opacity: 0;
+  transform: translateY(16px) scale(0.8);
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+}
+
+.scroll-top-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.scroll-top-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.scroll-top-btn:active {
+  transform: translateY(2px) scale(0.9);
+  box-shadow: 0 4px 12px rgba(167, 84, 255, 0.35);
+}
+
+@media (max-width: 780px) {
+  .scroll-top-btn {
+    display: inline-flex;
+  }
+}
+
+/* ==================== CONTACT FORM STATUS ==================== */
+
+.form-status {
+  margin-top: 0.85rem;
+  padding: 0.7rem 0.95rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(-6px);
+  max-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    max-height 0.35s ease;
+}
+
+.form-status.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 200px;
+  pointer-events: auto;
+}
+
+.form-status[data-state="success"] {
+  background: rgba(0, 230, 118, 0.1);
+  border: 1px solid rgba(0, 230, 118, 0.35);
+  color: #34d399;
+}
+
+.form-status[data-state="error"] {
+  background: rgba(255, 23, 68, 0.1);
+  border: 1px solid rgba(255, 23, 68, 0.35);
+  color: #ff6b81;
+}
+
+/* ==================== SPA PAGE TRANSITIONS ==================== */
+@keyframes spaEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+main.page-enter {
+  animation: spaEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.spa-active:not(.exit) main > * {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main.page-enter {
+    animation: none;
   }
 }
 
