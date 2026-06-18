@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&isplay=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
 
 :root {
   --light: rgb(255, 255, 255);
@@ -126,7 +126,7 @@ span.ui-clicked:not([style*="display"]) {
 
 /*Dark Theme (DEFAULT)*/
 body {
-  font-family: "JetBrains Mono", serif;
+  font-family: "JetBrains Mono", monospace;
   line-height: 1.6;
   background: lab(from var(--dark) 12 a b);
   color: var(--lightFont);
