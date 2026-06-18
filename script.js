@@ -147,13 +147,48 @@ document.addEventListener("DOMContentLoaded", () => {
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
   document.body.appendChild(scrollTopBtn);
 
-  const toggleScrollBtn = () => {
-    scrollTopBtn.classList.toggle("is-visible", window.scrollY > 400);
+  let aboutMorph = null;
+  let atTop = true;
+
+  const resetOnTop = () => {
+    document.querySelectorAll(".reveal-item.in-view").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top > window.innerHeight || r.bottom < 0) {
+        el.classList.remove("in-view");
+      }
+    });
+    if (aboutMorph) aboutMorph.reset();
   };
-  toggleScrollBtn();
-  window.addEventListener("scroll", toggleScrollBtn, { passive: true });
+  const onScroll = () => {
+    scrollTopBtn.classList.toggle("is-visible", window.scrollY > 400);
+    const nowTop = window.scrollY <= 2;
+    if (nowTop && !atTop) resetOnTop();
+    atTop = nowTop;
+  };
+  let scrollTicking = false;
+  const requestScrollUpdate = () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      onScroll();
+      scrollTicking = false;
+    });
+  };
+  onScroll();
+  window.addEventListener("scroll", requestScrollUpdate, { passive: true });
   scrollTopBtn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Smooth-scroll triggers
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-scroll-to]");
+    if (!trigger) return;
+    const target = document.querySelector(trigger.getAttribute("data-scroll-to"));
+    if (target) {
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
 
   /* ==================== URL helpers ==================== */
@@ -182,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const setActiveNav = (href) => {
     const target = normPath(href);
-    // A project detail page (/projects/X.html) keeps the "Projects" tab lit.
+    // A project detail page (/projects/X.html) to keeps the "Projects" tab lit.
     const inProjects = target.startsWith("/projects/");
     navList?.querySelectorAll("a").forEach((a) => {
       const ap = normPath(a.href);
@@ -199,8 +234,215 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Split the hero title into per-character spans so a soft blur wave can travel across it. Words stay grouped so they don't wrap mid-word.
+  const splitHeroTitle = () => {
+    const title = document.querySelector(".hero-title");
+    if (!title || title.dataset.split) return;
+    title.dataset.split = "1";
+
+    let index = 0;
+    const buildWord = (text, isGrad) => {
+      const word = document.createElement("span");
+      word.className = isGrad ? "hero-word hero-word--grad" : "hero-word";
+      for (const ch of text) {
+        const c = document.createElement("span");
+        c.className = "hero-char";
+        c.style.setProperty("--i", index++);
+        c.textContent = ch;
+        word.appendChild(c);
+      }
+      return word;
+    };
+
+    const frag = document.createDocumentFragment();
+    Array.from(title.childNodes).forEach((node) => {
+      const isGrad =
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.classList.contains("text-gradient");
+      (node.textContent || "").split(/(\s+)/).forEach((part) => {
+        if (part === "") return;
+        if (/^\s+$/.test(part)) frag.appendChild(document.createTextNode(part));
+        else frag.appendChild(buildWord(part, isGrad));
+      });
+    });
+
+    title.textContent = "";
+    title.appendChild(frag);
+  };
+
+  // Scroll reveal card lists (projects, skills). Cards fade & zoom & unblur as they enter view. Reveal only happens on the way DOWN and is NOT removed
+  // when a card leaves, so scrolling up partway never re-triggers it. The reveal is re-armed only when the user returns to the very top (see resetOnTop).
+  const REVEAL_SELECTOR =
+    ".project-card-modern, .skill-card-v2, .quality-card";
+  const revealObserver =
+    "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) entry.target.classList.add("in-view");
+            });
+          },
+          { threshold: 0.18, rootMargin: "0px 0px -8% 0px" }
+        )
+      : null;
+
+  const setupReveals = () => {
+    if (!revealObserver) return;
+    document.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
+      if (el.dataset.reveal) return;
+      el.dataset.reveal = "1";
+      el.classList.add("reveal-item");
+      
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        el.classList.add("in-view");
+      }
+      const siblings = Array.from(el.parentElement.children).filter((c) =>
+        c.matches(REVEAL_SELECTOR)
+      );
+      el.style.setProperty("--reveal-i", siblings.indexOf(el));
+      revealObserver.observe(el);
+    });
+  };
+
+  // Hero peek -> About SEAMLESS morph (hopefully). The three peek cards are absolutely positioned in <main> (document space). When the About section is about to be
+  // seen, each peek card animates its exact box until it lands on its matching About card. then a crossfade hands off to the real card. 
+  // Because both live in document space, the morph stays locked to the cards even while scrolling. Resets at the very top.
+  // ggs broder..
+  const setupAboutMorph = () => {
+    aboutMorph = null;
+    const peek = document.querySelector(".scroll-peek");
+    const about = document.querySelector("#about");
+    const main = document.querySelector(".home-page");
+    if (!peek || !about || !main) return;
+    const squares = Array.from(peek.querySelectorAll(".peek-card"));
+    const cards = Array.from(about.querySelectorAll(".bento-card"));
+    if (!squares.length || squares.length !== cards.length) return;
+
+    let morphed = false;
+    let revealTimer = null;
+    let rests = [];
+
+    const computeRest = () => {
+      const mr = main.getBoundingClientRect();
+      const mainTopDoc = mr.top + window.scrollY;
+      const vw = main.clientWidth;
+      const cx = vw / 2;
+      // adaptive size: scales with screen width
+      const w = Math.round(Math.max(112, Math.min(vw * 0.18, 164)));
+      const h = Math.round(w * 0.64);
+      const drop = Math.round(h * 0.16);
+      // card fan spread grows with screen width
+      const spread = Math.round(Math.max(w * 0.72, Math.min(vw * 0.13, 220)));
+
+      // Anchor below the hero CTAs so the cards never cover them, peeking up fromthe bottom of the first screen. On wider/taller screens the CTAs sit
+      // lower, so the cards also sit lower too. Use layout offsets (not getBoundingClientRect) so the measurement is correct even while the hero's
+      // entrance animation has the CTAs transformed.
+      const cta = document.querySelector(".hero-ctas");
+      let ctaBottomDoc;
+      if (cta) {
+        let y = 0;
+        let node = cta;
+        while (node && node !== main) {
+          y += node.offsetTop;
+          node = node.offsetParent;
+        }
+        ctaBottomDoc = mainTopDoc + y + cta.offsetHeight;
+      } else {
+        ctaBottomDoc = mainTopDoc + window.innerHeight * 0.72;
+      }
+
+      let topDoc = ctaBottomDoc + 40;
+      topDoc = Math.min(topDoc, window.innerHeight - 74); // keep a peek on screen
+      topDoc = Math.max(topDoc, ctaBottomDoc + 18); // …but never over the CTAs
+
+      const top = topDoc - mainTopDoc;
+      rests = [
+        { left: cx - w / 2 - spread, top: top + drop, w, h, rot: -11 },
+        { left: cx - w / 2, top: top, w, h, rot: 0 },
+        { left: cx - w / 2 + spread, top: top + drop, w, h, rot: 11 },
+      ];
+    };
+
+    const applyRest = (animate) => {
+      squares.forEach((s, i) => {
+        const r = rests[i];
+        if (!r) return;
+        if (!animate) s.style.transition = "none";
+        s.style.left = `${r.left}px`;
+        s.style.top = `${r.top}px`;
+        s.style.width = `${r.w}px`;
+        s.style.height = `${r.h}px`;
+        s.style.transform = `rotate(${r.rot}deg)`;
+        s.style.opacity = "";
+        if (!animate) {
+          void s.offsetWidth;
+          s.style.transition = "";
+        }
+      });
+    };
+
+    const measure = () => {
+      computeRest();
+      if (!morphed) applyRest(false);
+    };
+
+    const doMorph = () => {
+      if (morphed) return;
+      morphed = true;
+      peek.classList.add("peek-morphing");
+      const mr = main.getBoundingClientRect();
+      squares.forEach((s, i) => {
+        const r = cards[i].getBoundingClientRect();
+        s.style.left = `${r.left - mr.left}px`;
+        s.style.top = `${r.top - mr.top}px`;
+        s.style.width = `${r.width}px`;
+        s.style.height = `${r.height}px`;
+        s.style.transform = "rotate(0deg)";
+      });
+      clearTimeout(revealTimer);
+      
+      revealTimer = setTimeout(() => {
+        about.classList.add("about-revealed");
+        peek.classList.add("peek-gone");
+      }, 700);
+    };
+
+    // Reverse morph (on returning to the very top): the About cards fade out and
+    // the peek cards fade back in over their boxes, then glide back to the resting fanned peek.
+    const reset = () => {
+      if (!morphed) return;
+      morphed = false;
+      clearTimeout(revealTimer);
+      about.classList.remove("about-revealed");
+      peek.classList.remove("peek-gone");
+      applyRest(true);
+
+      setTimeout(() => {
+        if (!morphed) peek.classList.remove("peek-morphing");
+      }, 700);
+    };
+
+    measure();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) doMorph();
+        });
+      },
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+    );
+    io.observe(about);
+
+    aboutMorph = { reset, measure };
+  };
+
   /* ==================== Page features (re-bound after each swap) ==================== */
   const initPageFeatures = () => {
+    splitHeroTitle();
+    setupReveals();
+    setupAboutMorph();
+
     // Category filter bars (projects + skills)
     document.querySelectorAll("[data-filter-bar]").forEach((bar) => {
       if (bar.dataset.bound) return;
@@ -233,6 +475,51 @@ document.addEventListener("DOMContentLoaded", () => {
           );
           group.classList.toggle("filtered-hidden", !hasVisible);
         });
+      });
+    });
+
+    // SPM subject breakdown dropdown: animate open AND close every time it's toggled
+    document.querySelectorAll(".spm-details").forEach((details) => {
+      if (details.dataset.bound) return;
+      details.dataset.bound = "1";
+      const summary = details.querySelector(".spm-summary");
+      const content = details.querySelector(".spm-content");
+      if (!summary || !content) return;
+
+      summary.addEventListener("click", (event) => {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        event.preventDefault();
+        if (content.dataset.animating) return;
+
+        const play = (name, dur) => {
+          content.style.animation = "none";
+          void content.offsetWidth; // restart the animation
+          content.style.animation = `${name} ${dur}`;
+        };
+
+        if (details.open) {
+          content.dataset.animating = "1";
+          play("spmCollapse", "0.35s ease forwards");
+          content.addEventListener(
+            "animationend",
+            () => {
+              details.open = false;
+              content.style.animation = "";
+              delete content.dataset.animating;
+            },
+            { once: true }
+          );
+        } else {
+          details.open = true;
+          play("spmExpand", "0.45s cubic-bezier(0.22, 1, 0.36, 1)");
+          content.addEventListener(
+            "animationend",
+            () => {
+              content.style.animation = "";
+            },
+            { once: true }
+          );
+        }
       });
     });
 
@@ -295,6 +582,129 @@ document.addEventListener("DOMContentLoaded", () => {
         contactForm.reset();
       });
     }
+  };
+
+  // Expanded footer. Built once, the footer lives outside <main>, so its consistent across SPA navigations.
+  const setupFooter = () => {
+    const footer = document.querySelector("footer");
+    if (!footer || footer.dataset.expanded) return;
+    footer.dataset.expanded = "1";
+    footer.classList.add("site-footer");
+
+    const logoHref = document.querySelector(".logo a")?.href || location.href;
+    const u = (rel) => new URL(rel, logoHref).href;
+    const links = [
+      ["Home", "index.html"],
+      ["About Me", "about.html"],
+      ["Education", "education.html"],
+      ["Projects", "projects.html"],
+      ["Skills", "qualities.html"],
+      ["Contact", "contact.html"],
+    ]
+      .map(([label, rel]) => `<li><a href="${u(rel)}">${label}</a></li>`)
+      .join("");
+
+    const catSvg = `
+      <svg class="footer-cat-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path class="cat-fur" d="M24 40 L17 15 L43 30 Z"/>
+        <path class="cat-fur" d="M76 40 L83 15 L57 30 Z"/>
+        <path class="cat-ear-in" d="M26 38 L21 21 L39 31 Z"/>
+        <path class="cat-ear-in" d="M74 38 L79 21 L61 31 Z"/>
+        <ellipse class="cat-fur cat-head" cx="50" cy="58" rx="35" ry="31"/>
+        <g class="cat-whiskers">
+          <line class="cat-whisker" x1="7" y1="56" x2="26" y2="58"/>
+          <line class="cat-whisker" x1="7" y1="64" x2="26" y2="63"/>
+          <line class="cat-whisker" x1="93" y1="56" x2="74" y2="58"/>
+          <line class="cat-whisker" x1="93" y1="64" x2="74" y2="63"/>
+        </g>
+        <circle class="cat-blush" cx="28" cy="64" r="5.5"/>
+        <circle class="cat-blush" cx="72" cy="64" r="5.5"/>
+        <g class="cat-eye cat-eye-l">
+          <ellipse class="cat-eye-white" cx="37" cy="54" rx="8" ry="10"/>
+          <circle class="cat-pupil" cx="37" cy="55" r="4"/>
+        </g>
+        <g class="cat-eye cat-eye-r">
+          <ellipse class="cat-eye-white" cx="63" cy="54" rx="8" ry="10"/>
+          <circle class="cat-pupil" cx="63" cy="55" r="4"/>
+        </g>
+        <path class="cat-eye-happy" d="M30 56 q7 -8 14 0"/>
+        <path class="cat-eye-happy" d="M56 56 q7 -8 14 0"/>
+        <path class="cat-brow" d="M28 41 L45 47"/>
+        <path class="cat-brow" d="M72 41 L55 47"/>
+        <path class="cat-nose" d="M46 62 H54 L50 67 Z"/>
+        <path class="cat-mouth mouth-neutral" d="M50 67 q-5 5 -10 1 M50 67 q5 5 10 1"/>
+        <path class="cat-mouth mouth-happy" d="M38 68 q12 11 24 0"/>
+        <path class="cat-mouth mouth-angry" d="M40 74 q10 -7 20 0"/>
+        <ellipse class="cat-mouth mouth-scared" cx="50" cy="72" rx="5" ry="7"/>
+        <path class="cat-sweat" d="M84 39 q-4 7 0 11 q4 -4 0 -11 Z"/>
+      </svg>`;
+
+    footer.innerHTML = `
+      <div class="footer-inner">
+        <div class="footer-col footer-about">
+          <h4>zaiki's Portfolio</h4>
+          <p>A personal portfolio showcasing my projects, skills, and journey as
+          an aspiring web &amp; app developer - built with a focus on clean,
+          minimalist, and functional UI/UX.</p>
+          <p class="footer-credit">Designed &amp; built by Muhd Uzair (zaiki).</p>
+        </div>
+        <div class="footer-col footer-links-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">${links}</ul>
+        </div>
+        <div class="footer-col footer-cat-col">
+          <button class="footer-cat" type="button" aria-label="Pet the cat">${catSvg}</button>
+          <span class="footer-cat-hint">meow</span>
+        </div>
+      </div>
+      <div class="footer-bottom"><small>&copy; 2026 zaiki. All Rights Reserved.</small></div>`;
+
+    const cat = footer.querySelector(".footer-cat");
+    const pupils = footer.querySelectorAll(".cat-pupil");
+    let catTimer = null;
+
+    const tempMood = (cls, ms) => {
+      cat.classList.remove("cat--happy", "cat--angry", "cat--scared", "cat--react");
+      cat.classList.add(cls);
+      clearTimeout(catTimer);
+      catTimer = setTimeout(() => {
+        cat.classList.remove(cls);
+        if (cat.matches(":hover")) cat.classList.add("cat--happy");
+      }, ms);
+    };
+
+    cat.addEventListener("mouseenter", () => {
+      if (!cat.classList.contains("cat--angry") && !cat.classList.contains("cat--scared")) {
+        cat.classList.add("cat--happy");
+      }
+    });
+    cat.addEventListener("mouseleave", () => cat.classList.remove("cat--happy"));
+    cat.addEventListener("click", (event) => {
+      event.preventDefault();
+      tempMood(Math.random() < 0.5 ? "cat--angry" : "cat--scared", 1200);
+    });
+
+    // Reacting to any footer link click
+    footer.addEventListener("click", (event) => {
+      if (event.target.closest("a")) tempMood("cat--react", 750);
+    });
+
+    // Eyes track the cursor
+    document.addEventListener(
+      "mousemove",
+      (event) => {
+        const r = cat.getBoundingClientRect();
+        if (!r.width) return;
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const ang = Math.atan2(event.clientY - cy, event.clientX - cx);
+        const dist = Math.min(3.2, Math.hypot(event.clientX - cx, event.clientY - cy) / 50);
+        const dx = (Math.cos(ang) * dist).toFixed(2);
+        const dy = (Math.sin(ang) * dist).toFixed(2);
+        pupils.forEach((p) => p.setAttribute("transform", `translate(${dx} ${dy})`));
+      },
+      { passive: true }
+    );
   };
 
   /* ==================== SPA router ==================== */
@@ -397,14 +807,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ==================== Initial page setup ==================== */
   setActiveNav(location.href);
+  setupFooter();
 
-  if (document.fonts && document.fonts.status !== "loaded") {
-    document.fonts.ready.then(() => updatePill(false));
-  } else {
+  const afterLayout = () => {
     updatePill(false);
-  }
+    if (aboutMorph) aboutMorph.measure();
+  };
+  window.addEventListener("resize", () => {
+    if (aboutMorph) aboutMorph.measure();
+  });
 
   initPageFeatures();
+
+  if (document.fonts && document.fonts.status !== "loaded") {
+    document.fonts.ready.then(afterLayout);
+  } else {
+    afterLayout();
+  }
+  window.addEventListener("load", afterLayout);
 });
 
 window.addEventListener("pageshow", () => {
