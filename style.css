@@ -128,10 +128,13 @@ span.ui-clicked:not([style*="display"]) {
 body {
   font-family: "JetBrains Mono", monospace;
   line-height: 1.6;
+  background: #141418; /* fallback for browsers without relative lab() */
   background: lab(from var(--dark) 12 a b);
   color: var(--lightFont);
   z-index: 1;
-  transition: all 0.4s;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
   padding-top: 5rem;
 }
 
@@ -472,6 +475,7 @@ nav > * {
 .hero {
   text-align: center;
   padding: clamp(4rem, 8vw, 6rem) clamp(1rem, 5vw, 2.5rem);
+  background: #20202a; /* fallback for browsers without relative lab() */
   background: lab(from var(--dark) 20 a b);
   color: var(--lightFont);
 }
@@ -636,12 +640,12 @@ body.light .breadcrumb-current {
   margin-bottom: 0.75rem;
 }
 
-.about-hero h2,
-.education-hero h2,
-.project-hero h2,
-.qualities-hero h2,
+.about-hero h1,
+.education-hero h1,
+.project-hero h1,
+.qualities-hero h1,
 .case-hero h1,
-.contact-hero h2 {
+.contact-hero h1 {
   font-size: clamp(2rem, 3vw, 4.5rem);
   line-height: 1.05;
   margin-bottom: 1rem;
@@ -2681,7 +2685,7 @@ footer {
   font-weight: bolder;
   color: var(--lightFont);
   text-align: center;
-  font-family: "JetBrains Mono";
+  font-family: "JetBrains Mono", monospace;
   font-size: clamp(11px, 1.2vw, 13px);
   padding: clamp(5px, 0.8vw, 8px) clamp(8px, 1.2vw, 12px);
   min-width: 60px;
@@ -2746,6 +2750,7 @@ body.light .menubutton:hover {
 
 /* Light Theme (toggled with .light) */
 body.light {
+  background: #f6f6f8; /* fallback for browsers without relative lab() */
   background: lab(from var(--light) 97 a b);
   color: var(--darkFont);
 }
@@ -3071,6 +3076,7 @@ html {
   justify-content: center;
   min-height: 88vh;
   padding: clamp(5rem, 12vw, 9rem) clamp(1rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
+  background: #141418; /* fallback for browsers without relative lab() */
   background:
     radial-gradient(
       ellipse 70% 55% at 60% 40%,
@@ -4292,7 +4298,7 @@ body.light .contact-pill:hover {
   font-weight: bold;
   font-size: clamp(0.88rem, 1.3vw, 0.95rem);
   text-decoration: none;
-  font-family: "JetBrains Mono", serif;
+  font-family: "JetBrains Mono", monospace;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease,
@@ -4381,7 +4387,7 @@ body.light .view-more-btn:hover {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.72);
-  font-family: "JetBrains Mono", serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: clamp(0.76rem, 1.1vw, 0.85rem);
   font-weight: bold;
   cursor: pointer;
