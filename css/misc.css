@@ -205,8 +205,6 @@ body.spa-active:not(.exit) main > * {
   display: block;
 }
 
-/* Don't let the peek inherit the page-load stack-slide entrance - its group
-   opacity/transform would interfere with the morphing cards. (NOTE TO SELF: CHANGE LATER) */
 body:not(.exit) main > .scroll-peek {
   animation: none;
 }
@@ -229,7 +227,8 @@ body:not(.exit) main > .scroll-peek {
     0 0 22px rgba(167, 84, 255, 0.1);
   transform-origin: center;
   z-index: 4;
-  will-change: left, top, width, height, transform, opacity;
+  filter: blur(0);
+  will-change: left, top, width, height, transform, opacity, filter;
   transition:
     left 0.7s cubic-bezier(0.5, 0, 0.2, 1),
     top 0.7s cubic-bezier(0.5, 0, 0.2, 1),
@@ -237,7 +236,56 @@ body:not(.exit) main > .scroll-peek {
     height 0.7s cubic-bezier(0.5, 0, 0.2, 1),
     transform 0.7s cubic-bezier(0.5, 0, 0.2, 1),
     opacity 0.4s ease,
+    filter 0.55s ease,
     border-color 0.3s ease;
+}
+
+/* Entrance: the deck fades / rises / unblurs in on every page load, in step
+   with the rest of the stack-slide intro. The deck button itself can't take a
+   transform animation (it would become the containing block for the absolutely
+   positioned cards and break their anchoring), so we animate the cards. Uses the
+   `translate` longhand + `backwards` fill so it composes with the JS-set
+   `transform: rotate()` and reverts cleanly afterwards (leaving `filter` free
+   for the morph blur below). */
+@keyframes peekIntro {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+  }
+}
+body:not(.exit) .scroll-peek .peek-card {
+  animation: peekIntro 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+body:not(.exit) .scroll-peek .peek-card:nth-child(2) {
+  animation-delay: 0.5s;
+}
+body:not(.exit) .scroll-peek .peek-card:nth-child(1) {
+  animation-delay: 0.6s;
+}
+body:not(.exit) .scroll-peek .peek-card:nth-child(3) {
+  animation-delay: 0.64s;
+}
+
+/* Soft blur while the deck morphs into / back out of the About cards, so the
+   handoff reads as motion rather than a hard slide. Transitions via the `filter`
+   entry above; clears when `peek-morphing` is removed after the reset. */
+.scroll-peek.peek-morphing .peek-card {
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.exit) .scroll-peek .peek-card {
+    animation: none;
+  }
+  .scroll-peek.peek-morphing .peek-card {
+    filter: blur(0);
+  }
 }
 
 .peek-card::before {

@@ -11,7 +11,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 88vh;
+  /* Fill the viewport so the About section is always below the fold - this is
+     what lets the peek deck sit at the bottom edge of the screen without ever
+     covering the content beneath it, on any height. Subtract the body's
+     padding-top (5rem, reserved for the fixed header) so the hero ends exactly
+     at the fold instead of overflowing past it and pushing the CTAs off-screen. */
+  min-height: calc(100vh - 5rem);
+  min-height: calc(100dvh - 5rem);
   padding: clamp(5rem, 12vw, 9rem) clamp(1rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
   background: #141418; /* fallback for browsers without relative lab() */
   background:

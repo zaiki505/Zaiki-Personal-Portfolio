@@ -327,17 +327,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const mr = main.getBoundingClientRect();
       const mainTopDoc = mr.top + window.scrollY;
       const vw = main.clientWidth;
+      const vh = window.innerHeight;
+      const rem =
+        parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       const cx = vw / 2;
-      // adaptive size: scales with screen width
-      const w = Math.round(Math.max(112, Math.min(vw * 0.18, 164)));
-      const h = Math.round(w * 0.64);
-      const drop = Math.round(h * 0.16);
-      // card fan spread grows with screen width
-      const spread = Math.round(Math.max(w * 0.72, Math.min(vw * 0.13, 220)));
 
-      // Anchor below the hero CTAs so the cards never cover them, peeking up fromthe bottom of the first screen. On wider/taller screens the CTAs sit
-      // lower, so the cards also sit lower too. Use layout offsets (not getBoundingClientRect) so the measurement is correct even while the hero's
-      // entrance animation has the CTAs transformed.
+      // Fraction of the card shown above the fold; the rest peeks below it. The
+      // deck is ALWAYS clipped by the bottom edge - it never shows in full.
+      const PEEK = 0.7;
+
+      // Bottom of the hero CTAs, via layout offsets (robust while the hero
+      // entrance still has the CTAs transformed).
       const cta = document.querySelector(".hero-ctas");
       let ctaBottomDoc;
       if (cta) {
@@ -349,14 +349,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         ctaBottomDoc = mainTopDoc + y + cta.offsetHeight;
       } else {
-        ctaBottomDoc = mainTopDoc + window.innerHeight * 0.72;
+        ctaBottomDoc = mainTopDoc + vh * 0.72;
       }
 
-      let topDoc = ctaBottomDoc + 40;
-      topDoc = Math.min(topDoc, window.innerHeight - 74); // keep a peek on screen
-      topDoc = Math.max(topDoc, ctaBottomDoc + 18); // …but never over the CTAs
+      // Clear gap kept between the CTAs and the top of the visible deck, and capped
+      // gap between the fanned deck and the screen's side edges.
+      const topGap = Math.round(Math.min(Math.max(rem * 1.1, vh * 0.025), rem * 3.5));
+      const sideGap = Math.round(Math.min(Math.max(vw * 0.05, 16), 96));
 
+      // Adaptive height: scales with viewport height, width AND font size.
+      let h = Math.min(vh * 0.26, vw * 0.18, rem * 13, 230);
+      // The VISIBLE part (PEEK*h) must fit between the CTAs (+gap) and the fold
+      // Cap the height to guarantee it - on short screens the deck simply shrinks.
+      const roomAboveFold = vh - ctaBottomDoc - topGap; // fold at doc y = vh (scrollY 0)
+      if (roomAboveFold > 0) h = Math.min(h, roomAboveFold / PEEK);
+      h = Math.max(60, h);
+
+      // Width from the aspect ratio, then shrink the WHOLE fan if needed so it
+      // keeps the side-edge gaps (rule 2). 0.62 of w covers the rotation overhang.
+      let w = h / 0.62;
+      // Fan spread grows with screen width (so the trio doesn't look lost in the
+      // middle of wide screens), but is shrunk below to honour the side gaps.
+      let spread = Math.max(w * 0.58, Math.min(vw * 0.14, 260));
+      const maxHalf = vw / 2 - sideGap;
+      const deckHalf = spread + w * 0.62;
+      if (deckHalf > maxHalf && deckHalf > 0) {
+        const k = maxHalf / deckHalf;
+        w *= k;
+        spread *= k;
+        h = w * 0.62;
+      }
+      w = Math.round(w);
+      h = Math.round(h);
+      spread = Math.round(spread);
+      const drop = Math.round(h * 0.08);
+
+      // Anchor at the bottom edge of the screen: PEEK of the (centre) card shows
+      // above the fold, the remainder spills below it. Clamp so the top always
+      // stays below the CTAs, even on very short screens
+      let topDoc = vh - PEEK * h;
+      topDoc = Math.max(topDoc, ctaBottomDoc + topGap);
       const top = topDoc - mainTopDoc;
+
       rests = [
         { left: cx - w / 2 - spread, top: top + drop, w, h, rot: -11 },
         { left: cx - w / 2, top: top, w, h, rot: 0 },
@@ -382,26 +416,46 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     };
 
-    const measure = () => {
-      computeRest();
-      if (!morphed) applyRest(false);
-    };
-
-    const doMorph = () => {
-      if (morphed) return;
-      morphed = true;
-      peek.classList.add("peek-morphing");
+    // Lock each peek card onto its matching About card's exact box. 
+    // Used by the morph and, on resize, to keep the deck tracking the About cards in real time.
+    const positionOnAbout = (animate) => {
       const mr = main.getBoundingClientRect();
       squares.forEach((s, i) => {
         const r = cards[i].getBoundingClientRect();
+        if (!animate) s.style.transition = "none";
         s.style.left = `${r.left - mr.left}px`;
         s.style.top = `${r.top - mr.top}px`;
         s.style.width = `${r.width}px`;
         s.style.height = `${r.height}px`;
         s.style.transform = "rotate(0deg)";
+        if (!animate) {
+          void s.offsetWidth;
+          s.style.transition = "";
+        }
       });
+    };
+
+    let placed = false;
+    let lastResetT = 0;
+    const measure = (animate) => {
+      computeRest();
+      if (morphed) {
+        // Keep the deck glued to the (re-laid-out) About cards while resizing.
+        positionOnAbout(animate);
+      } else {
+        applyRest(animate && placed);
+        placed = true;
+      }
+    };
+
+    const doMorph = () => {
+      if (morphed) return;
+      if (window.scrollY < 40 && performance.now() - lastResetT < 400) return;
+      morphed = true;
+      peek.classList.add("peek-morphing");
+      positionOnAbout(true);
       clearTimeout(revealTimer);
-      
+
       revealTimer = setTimeout(() => {
         about.classList.add("about-revealed");
         peek.classList.add("peek-gone");
@@ -413,6 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const reset = () => {
       if (!morphed) return;
       morphed = false;
+      lastResetT = performance.now();
       clearTimeout(revealTimer);
       about.classList.remove("about-revealed");
       peek.classList.remove("peek-gone");
@@ -570,9 +625,19 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
+        const subject = encodeURIComponent(`Portfolio enquiry from ${name}`);
         const body = encodeURIComponent(
-          `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+          [
+            "Hi Uzair,",
+            "",
+            message,
+            "",
+            "——————————————————",
+            `Name:   ${name}`,
+            `Email:  ${email}`,
+            "",
+            "Sent from your portfolio contact form.",
+          ].join("\r\n")
         );
         window.location.href = `mailto:shamsulzire@gmail.com?subject=${subject}&body=${body}`;
         showStatus(
@@ -814,7 +879,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (aboutMorph) aboutMorph.measure();
   };
   window.addEventListener("resize", () => {
-    if (aboutMorph) aboutMorph.measure();
+    if (aboutMorph) aboutMorph.measure(true);
   });
 
   initPageFeatures();
