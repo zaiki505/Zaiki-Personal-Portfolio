@@ -475,7 +475,7 @@ nav > * {
 .hero {
   text-align: center;
   padding: clamp(4rem, 8vw, 6rem) clamp(1rem, 5vw, 2.5rem);
-  background: #20202a; /* fallback for browsers without relative lab() */
+  background: #20202a;
   background: lab(from var(--dark) 20 a b);
   color: var(--lightFont);
 }

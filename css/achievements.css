@@ -347,7 +347,6 @@ body.light .spm-details[open] {
   color: rgba(255, 255, 255, 0.3);
 }
 
-/* Colour-code grades so they're easier to read at a glance */
 .spm-grade.g-a {
   color: #34d399;
   background: rgba(16, 185, 129, 0.16);
@@ -1567,7 +1566,7 @@ body.light .menubutton:hover {
 
 /* Light Theme (toggled with .light) */
 body.light {
-  background: #f6f6f8; /* fallback for browsers without relative lab() */
+  background: #f6f6f8;
   background: lab(from var(--light) 97 a b);
   color: var(--darkFont);
 }
@@ -1854,7 +1853,6 @@ body.light .themebutton:active {
   width: 100%;
 }
 
-/* Make project cards fluid inside the grid */
 .project-card {
   width: 100%;
   margin: 0 auto;

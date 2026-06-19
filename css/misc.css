@@ -206,7 +206,7 @@ body.spa-active:not(.exit) main > * {
 }
 
 /* Don't let the peek inherit the page-load stack-slide entrance - its group
-   opacity/transform would interfere with the morphing cards. */
+   opacity/transform would interfere with the morphing cards. (NOTE TO SELF: CHANGE LATER) */
 body:not(.exit) main > .scroll-peek {
   animation: none;
 }
@@ -216,9 +216,7 @@ body:not(.exit) main > .scroll-peek {
 }
 
 .peek-card {
-  position: absolute; /* anchored to <main> (.home-page); geometry set in JS */
-  /* matched to the About bento cards (incl. the featured card's radial glow)
-     so the handoff is invisible */
+  position: absolute; /* anchored to <main> (.home-page); geometry set in JS, matched to the About bento cards */
   background:
     radial-gradient(circle at 80% 20%, rgba(167, 84, 255, 0.1), transparent 55%),
     rgba(0, 0, 0, 0.38);
@@ -242,7 +240,6 @@ body:not(.exit) main > .scroll-peek {
     border-color 0.3s ease;
 }
 
-/* subtle "card header" lines so the peek reads as little About cards */
 .peek-card::before {
   content: "";
   position: absolute;
@@ -263,8 +260,7 @@ body:not(.exit) main > .scroll-peek {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
 }
-/* the header hint fades as soon as the morph starts, so it never shows on the
-   growing/landed cards */
+
 .scroll-peek.peek-morphing .peek-card::before,
 .scroll-peek.peek-morphing .peek-card::after {
   opacity: 0;
@@ -311,9 +307,7 @@ body.light .peek-card {
 /* Cards fade + slide + zoom + unblur as they enter view, and reverse as they
    leave - driven by an IntersectionObserver toggling `.in-view`. Uses the
    translate/scale longhands so it composes with each card's hover transform. */
-/* Not-yet-revealed cards stay visible as dim, blurred placeholders - an
-   affordance that there's more content below - and resolve to sharp/full as
-   they scroll into view (and back to placeholder as they leave). */
+/* Not-yet-revealed cards stay visible as dim, blurred placeholders */
 .reveal-item {
   opacity: 0.4;
   translate: 0 16px;

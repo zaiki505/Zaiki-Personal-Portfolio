@@ -539,6 +539,49 @@
   white-space: nowrap;
 }
 
+/* Category-coded project tags. Each category gets its own hue */
+.tag-web {
+  background: rgba(59, 158, 255, 0.14);
+  border-color: rgba(59, 158, 255, 0.32);
+  color: #79c2ff;
+}
+.tag-system {
+  background: rgba(167, 84, 255, 0.14);
+  border-color: rgba(167, 84, 255, 0.32);
+  color: #c79bff;
+}
+.tag-creative {
+  background: rgba(255, 122, 60, 0.14);
+  border-color: rgba(255, 122, 60, 0.34);
+  color: #ff9d6b;
+}
+.tag-personal {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.34);
+  color: #44d6a7;
+}
+
+body.light .tag-web {
+  background: rgba(59, 158, 255, 0.12);
+  border-color: rgba(59, 158, 255, 0.4);
+  color: #1f6fd6;
+}
+body.light .tag-system {
+  background: rgba(167, 84, 255, 0.12);
+  border-color: rgba(167, 84, 255, 0.4);
+  color: #7a31d6;
+}
+body.light .tag-creative {
+  background: rgba(255, 122, 60, 0.12);
+  border-color: rgba(255, 122, 60, 0.42);
+  color: #d2540f;
+}
+body.light .tag-personal {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.42);
+  color: #0b8a63;
+}
+
 .project-details h4 {
   font-size: clamp(1rem, 1.6vw, 1.18rem);
   font-weight: bold;

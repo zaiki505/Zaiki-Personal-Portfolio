@@ -118,7 +118,6 @@ body.light .competency-section-head .section-sub {
   line-height: 1.2;
 }
 
-/* Proficiency tier blocks (grouped skills) */
 .skill-tier-block {
   margin-top: clamp(1.25rem, 3vw, 1.85rem);
 }
@@ -197,7 +196,6 @@ body.light .skill-card-name {
   color: var(--darkFont);
 }
 
-/* About page - Skills teaser card */
 .skills-teaser {
   display: flex;
   flex-direction: column;
@@ -238,7 +236,6 @@ body.light .skills-teaser-tags span {
   color: rgba(28, 28, 28, 0.8);
 }
 
-/* Quality cards: add category tag + filter support */
 .quality-card {
   position: relative;
 }
