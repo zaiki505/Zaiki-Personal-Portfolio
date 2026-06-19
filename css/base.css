@@ -98,19 +98,19 @@
 /* Global Squish Click Interaction Animation */
 @keyframes uiPop {
   0% {
-    transform: scale(1);
+    scale: 1 1;
   }
   30% {
-    transform: scale(0.9, 1.1);
+    scale: 0.9 1.1;
   }
   50% {
-    transform: scale(1.1, 0.9);
+    scale: 1.1 0.9;
   }
   70% {
-    transform: scale(0.97, 1.03);
+    scale: 0.97 1.03;
   }
   100% {
-    transform: scale(1);
+    scale: 1 1;
   }
 }
 

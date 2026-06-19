@@ -72,9 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ==================== Squish click animation (delegated) ==================== */
   document.addEventListener("click", (event) => {
     const interactive = event.target.closest(
-      "a, button, .milestone-card, .spm-summary, .skill-tier-header, .project-card, .edu-card"
+      "a, button, .bento-card, .project-card-modern, .project-card, .timeline-item, .evidence-card, .edu-card, .milestone-card, .gallery-item, .skill-card-v2, .quality-card, .about-block, .spm-summary, .skill-tier-header, .feature-card, .tech-concept-item, .contact-pill"
     );
-    if (!interactive || interactive.hasAttribute("data-no-squish")) return;
+    if (!interactive || interactive.closest("[data-no-squish], .no-squish")) return;
 
     interactive.classList.remove("ui-clicked");
     void interactive.offsetWidth;
@@ -151,12 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let atTop = true;
 
   const resetOnTop = () => {
-    document.querySelectorAll(".reveal-item.in-view").forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (r.top > window.innerHeight || r.bottom < 0) {
-        el.classList.remove("in-view");
-      }
-    });
+    // Note: card scroll-reveal is intentionally NOT replayed. It plays once per page visit 
+    // (fresh load or SPA navigation re-runs setupReveals), not every time the user scrolls back to the top.
     if (aboutMorph) aboutMorph.reset();
   };
   const onScroll = () => {
@@ -217,11 +213,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const setActiveNav = (href) => {
     const target = normPath(href);
-    // A project detail page (/projects/X.html) to keeps the "Projects" tab lit.
-    const inProjects = target.startsWith("/projects/");
+   
+    let activePath = target;
+    if (target.startsWith("/projects/")) activePath = "/projects.html";
+    else if (target === "/resume.html") activePath = "/about.html";
     navList?.querySelectorAll("a").forEach((a) => {
       const ap = normPath(a.href);
-      const isActive = ap === target || (inProjects && ap === "/projects.html");
+      const isActive = ap === activePath;
       if (isActive) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     });
@@ -719,7 +717,9 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="footer-col footer-cat-col">
           <button class="footer-cat" type="button" aria-label="Pet the cat">${catSvg}</button>
-          <span class="footer-cat-hint">meow</span>
+          <span class="footer-cat-hint">
+            hover only, no clicking me!
+          </span>
         </div>
       </div>
       <div class="footer-bottom"><small>&copy; 2026 zaiki. All Rights Reserved.</small></div>`;

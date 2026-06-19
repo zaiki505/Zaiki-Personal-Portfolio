@@ -3,6 +3,8 @@
 .home-page {
   width: 100%;
   position: relative;
+  margin-top: -5rem;
+  transition: color 3s ease;
 }
 
 /* --- Hero --- */
@@ -11,13 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Fill the viewport so the About section is always below the fold - this is
-     what lets the peek deck sit at the bottom edge of the screen without ever
-     covering the content beneath it, on any height. Subtract the body's
-     padding-top (5rem, reserved for the fixed header) so the hero ends exactly
-     at the fold instead of overflowing past it and pushing the CTAs off-screen. */
-  min-height: calc(100vh - 5rem);
-  min-height: calc(100dvh - 5rem);
+  min-height: 100vh;
+  min-height: 100dvh;
   padding: clamp(5rem, 12vw, 9rem) clamp(1rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
   background: #141418; /* fallback for browsers without relative lab() */
   background:
@@ -43,28 +40,80 @@
   pointer-events: none;
 }
 
-.screen-top-blur {
+/* Soft, slowly drifting aurora behind the hero, while staying minimalist. Similiar to the blur-wave feel of the title. */
+.hero-modern::after {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      40% 38% at 20% 26%,
+      rgba(167, 84, 255, 0.175),
+      transparent 70%
+    ),
+    radial-gradient(
+      34% 36% at 82% 70%,
+      rgba(236, 72, 154, 0.23),
+      transparent 70%
+    ),
+    radial-gradient(
+      32% 34% at 64% 14%,
+      rgba(45, 171, 255, 0.147),
+      transparent 72%
+    );
+  filter: blur(60px);
+  opacity: 0.95;
+  transition: 
+    transform 0.5s ease-out,
+    color 3s ease;
+  animation: heroAurora 7s ease-in-out infinite alternate;
+}
+
+@keyframes heroAurora {
+  0% {
+    translate: -3% -2%;
+    scale: 1;
+  }
+  50% {
+    translate: 3% 2%;
+    scale: 1.12;
+  }
+  100% {
+    translate: -1% 3%;
+    scale: 1.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-modern::after {
+    animation: none;
+  }
+}
+
+/* .screen-top-blur {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
   height: 150px;
-  pointer-events: none; /* Allows clicking elements underneath */
+  pointer-events: none;  -- Allows clicking elements underneath 
   z-index: 120;
 
-  /* Layer 1 - heaviest blur, at the very top */
+  -- Layer 1 - heaviest blur, at the very top 
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  mask-image: linear-gradient(to bottom, black 0%, black 16%, transparent 46%);
+  mask-image: linear-gradient(to top, black 0%, black 16%, transparent 46%);
   -webkit-mask-image: linear-gradient(
-    to bottom,
+    to top,
     black 0%,
     black 16%,
     transparent 46%
   );
-}
+}*/
 
-/* Layer 2 - medium blur at the middle */
+/* Layer 2 - medium blur at the middle
 .screen-top-blur::before {
   content: "";
   position: absolute;
@@ -72,20 +121,20 @@
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
   mask-image: linear-gradient(
-    to bottom,
+    to top,
     transparent 12%,
     black 40%,
     transparent 72%
   );
   -webkit-mask-image: linear-gradient(
-    to bottom,
+    to top,
     transparent 12%,
     black 40%,
     transparent 72%
   );
-}
+} */
 
-/* Layer 3 - faint blur fade out at the bottom edge */
+/* Layer 3 - faint blur fade out at the bottom edge
 .screen-top-blur::after {
   content: "";
   position: absolute;
@@ -93,41 +142,61 @@
   backdrop-filter: blur(2.5px);
   -webkit-backdrop-filter: blur(2.5px);
   mask-image: linear-gradient(
-    to bottom,
+    to top,
     transparent 42%,
     black 72%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
-    to bottom,
+    to top,
     transparent 42%,
     black 72%,
     transparent 100%
   );
-}
+} */
 
 .hero-content {
-  max-width: 760px;
+  max-width: clamp(760px, 62vw, 940px);
   text-align: center;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
+/* Faint film grain over the hero background so large empty areas get subtle texture and gradients don't band. */
+.hero-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+body.light .hero-noise {
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+}
+
+/* The hero type and its spacing scale with BOTH width and height (the `vh`
+   terms), so on taller / larger heroes the content grows to fill the space
+   instead of floating in a big empty frame - while the clamp maxes keep it from
+   crowding the peek deck or the side gaps. */
 .hero-greeting {
-  font-size: clamp(0.85rem, 1.4vw, 1rem);
+  font-size: clamp(0.85rem, 1vw + 0.5vh, 1.15rem);
   color: var(--highlight);
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 0.75rem;
+  margin-bottom: clamp(0.75rem, 1.4vh, 1.3rem);
   opacity: 0.9;
 }
 
 .hero-title {
-  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-size: clamp(3rem, 7vw + 1.4vh, 7.8rem);
   font-weight: bold;
   line-height: 1;
-  margin-bottom: 1rem;
+  margin-bottom: clamp(1rem, 2vh, 1.8rem);
   letter-spacing: -0.02em;
 }
 
@@ -199,7 +268,7 @@
 }
 
 /* The blur + widen happens in a short burst, then the text stays sharp for the
-   rest of the long cycle so it's comfortably readable between waves. */
+   rest of the long cycle so it's readable between waves. */
 @keyframes heroBlurWave {
   0% {
     filter: blur(0);
@@ -224,17 +293,17 @@
 }
 
 .hero-subtitle {
-  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  font-size: clamp(0.95rem, 1.2vw + 0.5vh, 1.4rem);
   color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 0.65rem;
+  margin-bottom: clamp(0.65rem, 1.2vh, 1.15rem);
   letter-spacing: 0.02em;
 }
 
 .hero-description {
-  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  font-size: clamp(0.9rem, 1vw + 0.5vh, 1.2rem);
   color: rgba(255, 255, 255, 0.72);
-  max-width: 520px;
-  margin: 0 auto 2.25rem;
+  max-width: clamp(520px, 44vw, 660px);
+  margin: 0 auto clamp(2rem, 3.4vh, 3.2rem);
   line-height: 1.7;
 }
 
@@ -697,6 +766,11 @@ body.light .hero-modern::before {
     rgba(167, 84, 255, 0.05),
     transparent 50%
   );
+}
+
+/* Gentler aurora on light theme so it act as a soft tint, not wash. */
+body.light .hero-modern::after {
+  opacity: 0.67;
 }
 
 body.light .hero-subtitle {

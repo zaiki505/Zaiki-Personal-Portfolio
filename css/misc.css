@@ -324,6 +324,10 @@ body.light .peek-card {
   border-color: rgba(0, 0, 0, 0.07);
 }
 
+body.light .peek-card::after {
+  background: lab(from var(--light) 90 a b)
+}
+
 /* Crossfade: once a peek card has landed on its About card, it fades out as the
    real card fades in over the same box. */
 .scroll-peek.peek-gone .peek-card {
