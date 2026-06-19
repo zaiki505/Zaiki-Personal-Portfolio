@@ -2,7 +2,7 @@
 
 A clean, responsive personal portfolio built with plain HTML, CSS, and JavaScript (no frameworks, no build tools). Designed to showcase my work, academic background, and technical skills as a computing student specialising in interactive media.
 
-**Live site → [zaiki505.github.io/Zaiki-Personal-Portfolio](https://zaiki505.github.io/Zaiki-Personal-Portfolio)**
+**Live site -> [zaiki505.github.io/Zaiki-Personal-Portfolio](https://zaiki505.github.io/Zaiki-Personal-Portfolio)**
 
 
 ## Overview
