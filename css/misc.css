@@ -1,0 +1,647 @@
+/* ==================== LOGO + HOME AFFORDANCE ==================== */
+.logo a {
+  position: relative;
+}
+
+.logo a::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 45px;
+  white-space: nowrap;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  
+  background: rgba(167, 84, 255, 0.16);
+  border: 1px solid rgba(167, 84, 255, 0.3);
+  color: var(--highlight);
+  opacity: 0;
+  transform: translateY(-4px) scale(0.96);
+  filter: blur(4px);
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.3s ease;
+}
+
+.logo a[data-tooltip]:hover::after,
+.logo a[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.logo a[aria-current="page"] {
+  cursor: default;
+}
+
+.logo a[aria-current="page"] .logo-text {
+  background: linear-gradient(
+    90deg,
+    var(--highlight),
+    #d48cff,
+    #7b5bff,
+    #d48cff,
+    var(--highlight)
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 8px rgba(167, 84, 255, 0.4));
+  animation: logoGradientShift 10s linear infinite;
+}
+
+.logo a[aria-current="page"]:hover .logo-text,
+.logo a[aria-current="page"] .logo-text:hover {
+  color: transparent;
+}
+
+@keyframes logoGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 250% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo a[aria-current="page"] .logo-text {
+    animation: none;
+  }
+}
+
+/* ==================== SCROLL-TO-TOP BUTTON (mobile) ==================== */
+
+.scroll-top-btn {
+  position: fixed;
+  right: clamp(1rem, 4vw, 1.5rem);
+  bottom: clamp(1rem, 4vw, 1.5rem);
+  width: 46px;
+  height: 46px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(167, 84, 255, 0.4);
+  border-radius: 50%;
+  background: var(--highlight);
+  color: var(--lightFont);
+  cursor: pointer;
+  z-index: 120;
+  box-shadow: 0 8px 22px rgba(167, 84, 255, 0.4);
+  opacity: 0;
+  transform: translateY(16px) scale(0.8);
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+}
+
+.scroll-top-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.scroll-top-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.scroll-top-btn:active {
+  transform: translateY(2px) scale(0.9);
+  box-shadow: 0 4px 12px rgba(167, 84, 255, 0.35);
+}
+
+@media (max-width: 780px) {
+  .scroll-top-btn {
+    display: inline-flex;
+  }
+}
+
+/* ==================== CONTACT FORM STATUS ==================== */
+
+.form-status {
+  margin-top: 0.85rem;
+  padding: 0.7rem 0.95rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(-6px);
+  max-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    max-height 0.35s ease;
+}
+
+.form-status.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 200px;
+  pointer-events: auto;
+}
+
+.form-status[data-state="success"] {
+  background: rgba(0, 230, 118, 0.1);
+  border: 1px solid rgba(0, 230, 118, 0.35);
+  color: #34d399;
+}
+
+.form-status[data-state="error"] {
+  background: rgba(255, 23, 68, 0.1);
+  border: 1px solid rgba(255, 23, 68, 0.35);
+  color: #ff6b81;
+}
+
+/* ==================== SPA PAGE TRANSITIONS ==================== */
+@keyframes spaEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+main.page-enter {
+  animation: spaEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.spa-active:not(.exit) main > * {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main.page-enter {
+    animation: none;
+  }
+}
+
+/* ==================== HERO PEEK + ABOUT SEAMLESS MORPH ==================== */
+/* Three mini cards, styled identically to the About bento cards, sit fanned at
+   the bottom of the hero (only their tops peek). When the About section is about
+   to be seen, JS animates each peek card's EXACT box - left/top/width/height (no
+   scale, so radius & shape never distort) - until it lands precisely on its
+   matching About card, then crossfades to the real card. Everything is in
+   document space, so the morph stays locked to the cards even while scrolling -
+   no break in the illusion. Resets when the user returns to the very top. */
+.scroll-peek {
+  position: static;
+  display: block;
+}
+
+/* Don't let the peek inherit the page-load stack-slide entrance - its group
+   opacity/transform would interfere with the morphing cards. */
+body:not(.exit) main > .scroll-peek {
+  animation: none;
+}
+
+.scroll-peek-deck {
+  position: static;
+}
+
+.peek-card {
+  position: absolute; /* anchored to <main> (.home-page); geometry set in JS */
+  /* matched to the About bento cards (incl. the featured card's radial glow)
+     so the handoff is invisible */
+  background:
+    radial-gradient(circle at 80% 20%, rgba(167, 84, 255, 0.1), transparent 55%),
+    rgba(0, 0, 0, 0.38);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.28),
+    0 0 22px rgba(167, 84, 255, 0.1);
+  transform-origin: center;
+  z-index: 4;
+  will-change: left, top, width, height, transform, opacity;
+  transition:
+    left 0.7s cubic-bezier(0.5, 0, 0.2, 1),
+    top 0.7s cubic-bezier(0.5, 0, 0.2, 1),
+    width 0.7s cubic-bezier(0.5, 0, 0.2, 1),
+    height 0.7s cubic-bezier(0.5, 0, 0.2, 1),
+    transform 0.7s cubic-bezier(0.5, 0, 0.2, 1),
+    opacity 0.4s ease,
+    border-color 0.3s ease;
+}
+
+/* subtle "card header" lines so the peek reads as little About cards */
+.peek-card::before {
+  content: "";
+  position: absolute;
+  left: 14%;
+  top: 22%;
+  width: 52%;
+  height: 7%;
+  border-radius: 999px;
+  background: rgba(167, 84, 255, 0.4);
+}
+.peek-card::after {
+  content: "";
+  position: absolute;
+  left: 14%;
+  top: 40%;
+  width: 72%;
+  height: 5%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+/* the header hint fades as soon as the morph starts, so it never shows on the
+   growing/landed cards */
+.scroll-peek.peek-morphing .peek-card::before,
+.scroll-peek.peek-morphing .peek-card::after {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.scroll-peek:hover .peek-card {
+  border-color: rgba(167, 84, 255, 0.4);
+}
+
+body.light .peek-card {
+  background: lab(from var(--light) l a b);
+  border-color: rgba(0, 0, 0, 0.07);
+}
+
+/* Crossfade: once a peek card has landed on its About card, it fades out as the
+   real card fades in over the same box. */
+.scroll-peek.peek-gone .peek-card {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* About bento cards keep their full size at all times (so the morph can measure
+   and land on them) and are simply hidden, then crossfaded in - no transform,
+   so the box matches the landed peek card exactly. */
+#about .bento-card {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#about.about-revealed .bento-card {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-peek {
+    display: none;
+  }
+  #about .bento-card {
+    opacity: 1;
+  }
+}
+
+/* ==================== SCROLL REVEAL (card lists) ==================== */
+/* Cards fade + slide + zoom + unblur as they enter view, and reverse as they
+   leave - driven by an IntersectionObserver toggling `.in-view`. Uses the
+   translate/scale longhands so it composes with each card's hover transform. */
+/* Not-yet-revealed cards stay visible as dim, blurred placeholders - an
+   affordance that there's more content below - and resolve to sharp/full as
+   they scroll into view (and back to placeholder as they leave). */
+.reveal-item {
+  opacity: 0.4;
+  translate: 0 16px;
+  scale: 0.94;
+  filter: blur(7px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--reveal-i, 0) * 0.06s),
+    translate 0.6s cubic-bezier(0.16, 1, 0.3, 1)
+      calc(var(--reveal-i, 0) * 0.06s),
+    scale 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--reveal-i, 0) * 0.06s),
+    filter 0.6s ease calc(var(--reveal-i, 0) * 0.06s),
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.reveal-item.in-view {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    filter: none;
+    transition: none;
+  }
+}
+
+/* ==================== EXPANDED FOOTER ==================== */
+footer.site-footer {
+  text-align: left;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 5vw, 3rem) 1.25rem;
+}
+
+.footer-inner {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.7fr 1fr auto;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.footer-col h4 {
+  font-size: 1rem;
+  color: var(--highlight);
+  margin-bottom: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.footer-about p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  max-width: 46ch;
+  margin: 0 0 0.6rem;
+}
+
+.footer-about .footer-credit {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+}
+
+.footer-links {
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition:
+    color 0.25s ease,
+    padding-left 0.25s ease;
+}
+
+.footer-links a:hover {
+  color: var(--highlight);
+  padding-left: 5px;
+}
+
+.footer-cat-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.footer-cat {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: clamp(92px, 22vw, 122px);
+  line-height: 0;
+}
+
+.footer-cat-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.footer-cat-hint {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.05em;
+}
+
+.footer-bottom {
+  width: min(1120px, 100%);
+  margin: clamp(1.5rem, 4vw, 2.5rem) auto 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.footer-bottom small {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- Interactive cat face --- */
+.cat-fur {
+  fill: #423b4f;
+}
+.cat-ear-in {
+  fill: var(--highlight);
+}
+.cat-eye-white {
+  fill: #fff;
+}
+.cat-pupil {
+  fill: #1c1c1c;
+}
+.cat-nose {
+  fill: #ff8fcf;
+}
+.cat-mouth {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mouth-scared {
+  fill: #241f2b;
+  stroke: none;
+}
+.cat-brow {
+  stroke: #fff;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.cat-eye-happy {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.cat-blush {
+  fill: rgba(255, 130, 180, 0.65);
+}
+.cat-whisker {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.cat-sweat {
+  fill: #7fd4ff;
+}
+
+/* element visibility per face state */
+.cat-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cat-eye-happy,
+.cat-brow,
+.cat-blush,
+.cat-sweat,
+.mouth-happy,
+.mouth-angry,
+.mouth-scared {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.mouth-neutral {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+/* Happy (hover) */
+.footer-cat.cat--happy .cat-eye {
+  opacity: 0;
+}
+.footer-cat.cat--happy .cat-eye-happy,
+.footer-cat.cat--happy .cat-blush {
+  opacity: 1;
+}
+.footer-cat.cat--happy .mouth-neutral {
+  opacity: 0;
+}
+.footer-cat.cat--happy .mouth-happy {
+  opacity: 1;
+}
+
+/* Angry (click) */
+.footer-cat.cat--angry .cat-brow {
+  opacity: 1;
+}
+.footer-cat.cat--angry .cat-eye {
+  transform: scaleY(0.68);
+}
+.footer-cat.cat--angry .mouth-neutral {
+  opacity: 0;
+}
+.footer-cat.cat--angry .mouth-angry {
+  opacity: 1;
+}
+
+/* Scared (click) */
+.footer-cat.cat--scared .cat-eye {
+  transform: scale(1.22);
+}
+.footer-cat.cat--scared .cat-sweat {
+  opacity: 1;
+}
+.footer-cat.cat--scared .mouth-neutral {
+  opacity: 0;
+}
+.footer-cat.cat--scared .mouth-scared {
+  opacity: 1;
+}
+
+/* React (footer link clicked) - startled */
+.footer-cat.cat--react .cat-eye {
+  transform: scale(1.16);
+}
+.footer-cat.cat--react .mouth-neutral {
+  opacity: 0;
+}
+.footer-cat.cat--react .mouth-scared {
+  opacity: 1;
+}
+
+/* Footer light theme */
+body.light footer.site-footer .footer-about p {
+  color: rgba(28, 28, 28, 0.72);
+}
+body.light footer.site-footer .footer-about .footer-credit,
+body.light footer.site-footer .footer-cat-hint,
+body.light footer.site-footer .footer-bottom small {
+  color: rgba(28, 28, 28, 0.45);
+}
+body.light footer.site-footer .footer-links a {
+  color: rgba(28, 28, 28, 0.7);
+}
+body.light footer.site-footer .footer-links a:hover {
+  color: var(--highlight);
+}
+body.light footer.site-footer .footer-bottom {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Footer responsive */
+@media (max-width: 760px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    text-align: center;
+  }
+  .footer-about p {
+    max-width: none;
+  }
+  .footer-links {
+    justify-items: center;
+  }
+  .footer-cat-col {
+    order: -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-eye,
+  .cat-eye-happy,
+  .cat-brow,
+  .cat-blush,
+  .cat-sweat,
+  .mouth-neutral,
+  .mouth-happy,
+  .mouth-angry,
+  .mouth-scared {
+    transition: none;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+    color: #1c1c1c;
+    padding-top: 0;
+  }
+
+  header,
+  footer,
+  .contact-submit {
+    display: none;
+  }
+
+  .resume-page {
+    width: 100%;
+    padding: 0;
+  }
+
+  .resume-sheet {
+    border: none;
+    box-shadow: none;
+    max-width: none;
+  }
+}
