@@ -39,9 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   else if (window.matchMedia("(prefers-color-scheme: light)").matches) setLight();
   else setDark();
 
-  // While toggling, apply a broad eased colour transition to every element so
-  // the whole page cross-fades between themes (not just the body). Removed after
-  // the transition so it never interferes with normal interactions.
+  // While toggling, apply a broad eased colour transition to every element for a short time
   let themeTransTimer = null;
   toggleBtn?.addEventListener("click", () => {
     document.body.classList.add("theme-transition");
@@ -52,8 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     if (document.body.classList.contains("light")) setDark();
     else setLight();
-    // Re-sample the nav contrast across the theme cross-fade so the text colour
-    // tracks the changing background rather than the mid-transition value.
+    // Sample the nav contrast across the theme cross-fade so the text colour tracks the changing background.
     if (typeof updateHeaderContrast === "function") {
       const endT = performance.now() + 720;
       const tick = () => {
@@ -172,11 +169,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Adaptive nav text colour: sample the luminance of the content just under the
   // header and flip the nav between light/dark text so it stays readable over
-  // whatever is scrolling behind the (translucent) pill.
+  // whatever is scrolling behind the (translucent) pill. Thanks to internet.
   const headerEl = document.querySelector("header");
-  // Resolve ANY CSS colour (rgb/hex/lab/oklab/named) to luminance via a 1x1
-  // canvas, which normalises everything to rgba - so modern lab() theme colours
-  // are read correctly.
+  
   const _lumCanvas = document.createElement("canvas");
   _lumCanvas.width = _lumCanvas.height = 1;
   const _lumCtx = _lumCanvas.getContext("2d", { willReadFrequently: true });
@@ -187,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
     _lumCtx.fillStyle = c;
     _lumCtx.fillRect(0, 0, 1, 1);
     const d = _lumCtx.getImageData(0, 0, 1, 1).data;
-    if (d[3] < 30) return null; // effectively transparent → keep walking up
+    if (d[3] < 30) return null;
     return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255;
   };
 
@@ -232,11 +227,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLight = document.body.classList.contains("light");
     // Sort to find the "worst" contrast offenders
-    // Light theme (dark text) -> worst is darkest (lowest lum) -> ascending
-    // Dark theme (light text) -> worst is lightest (highest lum) -> descending
+    // Light theme (dark text); worst is darkest (lowest lum), thus ascending
+    // Dark theme (light text); worst is lightest (highest lum), thus descending
     lums.sort((a, b) => isLight ? a - b : b - a);
 
-    // Average the worst ~40% of the strip (e.g. 2 out of 5 points)
+    // Average the worst ~40% of the strip
     const worstCount = Math.max(1, Math.round(lums.length * 0.4));
     let sum = 0;
     for (let i = 0; i < worstCount; i++) {
@@ -245,24 +240,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const lum = sum / worstCount;
 
     if (isLight) {
-      // Light theme = dark text: a LIGHT scrim that appears only over dark
-      // content (and fades out over light content for a clean look).
+      // Light theme = dark text: a LIGHT scrim that appears only over dark content and fades out over light content.
       headerEl.style.setProperty("--nav-scrim-rgb", "255, 255, 255");
       headerEl.style.setProperty(
         "--nav-scrim",
         Math.min(0.55, (1 - lum) * 0.62).toFixed(3)
       );
     } else {
-      // Dark theme = white text: a DARK scrim that strengthens over light
-      // content and stays subtle (but present) over dark content.
+      // Dark theme = white text: a DARK scrim that strengthens over light content and stays subtle over dark content.
       headerEl.style.setProperty("--nav-scrim-rgb", "0, 0, 0");
       headerEl.style.setProperty("--nav-scrim", (0.16 + lum * 0.3).toFixed(3));
     }
   };
 
   const resetOnTop = () => {
-    // Note: card scroll-reveal is intentionally NOT replayed. It plays once per page visit
-    // (fresh load or SPA navigation re-runs setupReveals), not every time the user scrolls back to the top.
+    // Note: card scroll-reveal is intentionally NOT replayed. It plays once per page visit (fresh load or SPA navigation re-runs setupReveals).
     if (aboutMorph) aboutMorph.reset();
   };
   const onScroll = () => {
@@ -707,8 +699,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Certificate links: reveal the arrow icon only if the file actually exists
-    // in /reports (HEAD request). Upload a file matching data-cert and it shows
-    // automatically; otherwise the icon stays hidden.
+    // Upload a file matching data-cert and it shows automatically, otherwise icon stays hidden.
     document.querySelectorAll(".milestone-cert[data-cert]").forEach((link) => {
       if (link.dataset.checked) return;
       link.dataset.checked = "1";
@@ -873,7 +864,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     cat.addEventListener("mouseleave", () => cat.classList.remove("cat--happy"));
 
-    // Spam-click → the cat rages and bolts off the screen, then bounces back.
+    // Spam-click -> cat rages and flee off the screen, then bounces back.
     let clickTimes = [];
     let fleeing = false;
     const fleeCat = () => {
@@ -927,7 +918,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         let dx, dy;
         if (cat.classList.contains("cat--annoyed")) {
-          // Bombastic side-eye: extreme horizontal glare, no vertical tracking
+          // Bombastic side-eye
           const isRight = event.clientX > cx;
           dx = isRight ? 4.5 : -4.5;
           dy = 0;
@@ -947,7 +938,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Random interval between 2.5s and 6.5s
       const delay = 2500 + Math.random() * 4000;
       setTimeout(() => {
-        // Skip blink if the cat is fleeing or smiling (eyes already closed)
         if (fleeing || cat.classList.contains("cat--happy")) {
           scheduleBlink();
           return;

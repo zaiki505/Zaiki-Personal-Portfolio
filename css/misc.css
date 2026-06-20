@@ -198,8 +198,8 @@ body.spa-active:not(.exit) main > * {
    to be seen, JS animates each peek card's EXACT box - left/top/width/height (no
    scale, so radius & shape never distort) - until it lands precisely on its
    matching About card, then crossfades to the real card. Everything is in
-   document space, so the morph stays locked to the cards even while scrolling -
-   no break in the illusion. Resets when the user returns to the very top. */
+   document space, so the morph stays locked to the cards even while scrolling. 
+   Resets when the user returns to the very top. */
 .scroll-peek {
   position: static;
   display: block;
@@ -241,11 +241,8 @@ body:not(.exit) main > .scroll-peek {
 }
 
 /* Entrance: the deck fades / rises / unblurs in on every page load, in step
-   with the rest of the stack-slide intro. The deck button itself can't take a
-   transform animation (it would become the containing block for the absolutely
-   positioned cards and break their anchoring), so we animate the cards. Uses the
-   `translate` longhand + `backwards` fill so it composes with the JS-set
-   `transform: rotate()` and reverts cleanly afterwards (leaving `filter` free
+   with the rest of the stack-slide intro. Uses the `translate` longhand + `backwards` 
+   fill so it composes with the JS-set `transform: rotate()` and reverts cleanly afterwards (leaving `filter` free
    for the morph blur below). */
 @keyframes peekIntro {
   from {
@@ -335,9 +332,6 @@ body.light .peek-card::after {
   pointer-events: none;
 }
 
-/* About bento cards keep their full size at all times (so the morph can measure
-   and land on them) and are simply hidden, then crossfaded in - no transform,
-   so the box matches the landed peek card exactly. */
 #about .bento-card {
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -358,7 +352,7 @@ body.light .peek-card::after {
 /* ==================== SCROLL REVEAL (card lists) ==================== */
 /* Cards fade + slide + zoom + unblur as they enter view, and reverse as they
    leave - driven by an IntersectionObserver toggling `.in-view`. Uses the
-   translate/scale longhands so it composes with each card's hover transform. */
+   translate/scale so it composes with each card's hover transform. */
 /* Not-yet-revealed cards stay visible as dim, blurred placeholders */
 .reveal-item {
   opacity: 0.4;
@@ -607,7 +601,7 @@ footer.site-footer {
   transform: scaleY(0.05) !important;
 }
 
-/* React (footer link clicked) - startled */
+/* React - startled */
 .footer-cat.cat--react .cat-eye {
   transform: scale(1.16);
 }
@@ -618,10 +612,6 @@ footer.site-footer {
   opacity: 1;
 }
 
-/* Theme-reactive pupils: a real cat narrows to a vertical slit in bright light
-   and dilates to a wide round pupil in the dark. The scale lives on a wrapper
-   <g> so it composes with (and never fights) the per-frame cursor tracking
-   transform on the inner <circle>. */
 .cat-pupil-wrap {
   transform-box: fill-box;
   transform-origin: center;
@@ -632,7 +622,7 @@ body.light .cat-pupil-wrap {
   transform: scaleX(0.32) scaleY(1.28); /* light theme: vertical slit */
 }
 
-/* Super-exaggerated rage face (shown while the cat storms off). */
+/* Super-exaggerated rage face (shown while cat storms off). */
 .footer-cat.cat--rage .cat-brow {
   opacity: 1;
 }
@@ -651,15 +641,13 @@ body.light .cat-pupil-wrap {
     drop-shadow(0 0 6px rgba(255, 70, 70, 0.55));
 }
 
-/* Spam-click flee: the cat bounds off the top of the screen with squash &
+/* Spam-click flee: cat bounds off the screen with squash &
    stretch, hangs off-screen for a moment, then bounces back. */
 .footer-cat.cat--flee {
   position: relative;
   z-index: 200;
   pointer-events: none;
   transform-origin: bottom center;
-  /* !important so it wins over the global click-squish (uiPop, also !important),
-     letting the squishy click stay on for normal clicks. */
   animation: catFlee 6.4s cubic-bezier(0.45, 0, 0.55, 1) forwards !important;
 }
 
