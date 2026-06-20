@@ -997,8 +997,6 @@ body.light .resume-header {
     lab(from var(--highlight) 35 a b),
     lab(from var(--dark) 22 a b)
   );
-  display: grid;
-  place-items: center;
 }
 
 .resume-avatar img {

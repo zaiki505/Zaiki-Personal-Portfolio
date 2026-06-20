@@ -14,6 +14,13 @@ if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
 }
 
+/* A little hello for anyone poking around in DevTools. */
+console.log(
+  "%c👀 Since you're here — I'm open for work.%c\n✉️  shamsulzire@gmail.com",
+  "font-size:14px;font-weight:bold;color:#a754ff;line-height:1.7;",
+  "font-size:12px;color:#9b9b9b;"
+);
+
 document.addEventListener("DOMContentLoaded", () => {
   /* ==================== Theme toggle ==================== */
   const toggleBtn = document.getElementById("theme-toggle");
@@ -68,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const openMenu = () => {
     nav?.classList.add("menu-open");
     document.body.classList.add("nav-menu-open");
+    if (typeof updateHeaderContrast === "function") updateHeaderContrast();
   };
 
   const closeMenu = () => {
@@ -714,6 +722,36 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(() => {});
     });
 
+    // Easter egg 2 implementation
+    const coinPhoto = document.querySelector(".profile-photo.coin-photo");
+    if (coinPhoto && !coinPhoto.dataset.bound) {
+      coinPhoto.dataset.bound = "1";
+      const inner = coinPhoto.querySelector(".coin-inner");
+      let turns = 0;
+      let onBack = false;
+      let returnTimer = null;
+      const reveal = () => {
+        if (!onBack) {
+          turns += 1; // always spin forward
+          inner.style.transform = `rotateY(${turns * 180}deg)`;
+          onBack = true;
+        }
+        clearTimeout(returnTimer);
+        returnTimer = setTimeout(() => {
+          turns += 1;
+          inner.style.transform = `rotateY(${turns * 180}deg)`;
+          onBack = false;
+        }, 3000);
+      };
+      coinPhoto.addEventListener("click", reveal);
+      coinPhoto.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          reveal();
+        }
+      });
+    }
+
     // Contact form
     const contactForm = document.getElementById("contact-form");
     if (contactForm && !contactForm.dataset.bound) {
@@ -835,9 +873,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <ul class="footer-links">${links}</ul>
         </div>
         <div class="footer-col footer-cat-col">
-          <button class="footer-cat" type="button" aria-label="Pet the cat">${catSvg}</button>
+          <button class="footer-cat" type="button" aria-label="Pet the cat" title="Don't click me!"
+          >${catSvg}</button>
           <span class="footer-cat-hint">
-            Hover only. No clicking!
+            Meow!
           </span>
         </div>
       </div>
