@@ -133,10 +133,28 @@ body {
   color: var(--lightFont);
   z-index: 1;
   transition:
-    background-color 0.4s ease,
-    color 0.4s ease;
+    background-color 0.45s ease-in-out,
+    color 0.45s ease-in-out;
   padding-top: 5rem;
 }
+
+/* While the theme is toggling, cross-fade colours on EVERY element (not just the
+   body) with a smooth ease-in-out, so the whole page transitions seamlessly.
+   Applied only during the toggle (a class is added then removed in JS) so it
+   never affects normal interactions. The cat pupils are excluded so their
+   shape-morph keeps its own springy timing. */
+body.theme-transition,
+body.theme-transition *:not(.cat-pupil-wrap):not(.cat-pupil) {
+  transition-property: background-color, color, border-color, box-shadow, fill,
+    stroke, outline-color !important;
+  transition-duration: 0.5s !important;
+  transition-timing-function: ease-in-out !important;
+}
+
+/* Adaptive nav: rather than recolouring the (constant) text, the frosted pill
+   itself adapts - JS sets --nav-scrim from the luminance of the content behind
+   the header, darkening the scrim over light content so the text always stays
+   readable, and keeping it subtle over dark content. See `header` background. */
 
 /* Layered "stack slide-in" - blur + slide from the top, layer by layer */
 @keyframes stackSlideIn {
@@ -223,6 +241,7 @@ body.exit footer {
 
 header {
   background: rgba(0, 0, 0, 0.195);
+  background: rgba(var(--nav-scrim-rgb, 0, 0, 0), var(--nav-scrim, 0.195));
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -438,7 +457,7 @@ nav > * {
   text-decoration: none;
   border-radius: 999px;
   padding: 0.2rem 0.45rem;
-  transition: color 0.4s;
+  transition: color 0.35s ease-in-out;
 }
 
 .nav-links a:hover {

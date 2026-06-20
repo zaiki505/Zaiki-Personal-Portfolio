@@ -39,9 +39,29 @@ document.addEventListener("DOMContentLoaded", () => {
   else if (window.matchMedia("(prefers-color-scheme: light)").matches) setLight();
   else setDark();
 
+  // While toggling, apply a broad eased colour transition to every element so
+  // the whole page cross-fades between themes (not just the body). Removed after
+  // the transition so it never interferes with normal interactions.
+  let themeTransTimer = null;
   toggleBtn?.addEventListener("click", () => {
+    document.body.classList.add("theme-transition");
+    clearTimeout(themeTransTimer);
+    themeTransTimer = setTimeout(
+      () => document.body.classList.remove("theme-transition"),
+      650
+    );
     if (document.body.classList.contains("light")) setDark();
     else setLight();
+    // Re-sample the nav contrast across the theme cross-fade so the text colour
+    // tracks the changing background rather than the mid-transition value.
+    if (typeof updateHeaderContrast === "function") {
+      const endT = performance.now() + 720;
+      const tick = () => {
+        updateHeaderContrast();
+        if (performance.now() < endT) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
   });
 
   /* ==================== Mobile menu ==================== */
@@ -150,13 +170,104 @@ document.addEventListener("DOMContentLoaded", () => {
   let aboutMorph = null;
   let atTop = true;
 
+  // Adaptive nav text colour: sample the luminance of the content just under the
+  // header and flip the nav between light/dark text so it stays readable over
+  // whatever is scrolling behind the (translucent) pill.
+  const headerEl = document.querySelector("header");
+  // Resolve ANY CSS colour (rgb/hex/lab/oklab/named) to luminance via a 1x1
+  // canvas, which normalises everything to rgba - so modern lab() theme colours
+  // are read correctly.
+  const _lumCanvas = document.createElement("canvas");
+  _lumCanvas.width = _lumCanvas.height = 1;
+  const _lumCtx = _lumCanvas.getContext("2d", { willReadFrequently: true });
+  
+  const colourLum = (c) => {
+    if (!c) return null;
+    _lumCtx.clearRect(0, 0, 1, 1);
+    _lumCtx.fillStyle = c;
+    _lumCtx.fillRect(0, 0, 1, 1);
+    const d = _lumCtx.getImageData(0, 0, 1, 1).data;
+    if (d[3] < 30) return null; // effectively transparent → keep walking up
+    return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255;
+  };
+
+  const imgLum = (img) => {
+    try {
+      if (!img.complete || img.naturalWidth === 0) return null;
+      _lumCtx.clearRect(0, 0, 1, 1);
+      _lumCtx.drawImage(img, 0, 0, 1, 1);
+      const d = _lumCtx.getImageData(0, 0, 1, 1).data;
+      if (d[3] < 30) return null;
+      return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const bgLuminance = (el) => {
+    while (el && el.nodeType === 1) {
+      if (el.tagName.toLowerCase() === "img") {
+        const l = imgLum(el);
+        if (l !== null) return l;
+      }
+      const l = colourLum(getComputedStyle(el).backgroundColor);
+      if (l !== null) return l;
+      el = el.parentElement;
+    }
+    return colourLum(getComputedStyle(document.body).backgroundColor) ?? 0.1;
+  };
+
+  const updateHeaderContrast = () => {
+    if (!headerEl) return;
+    const r = headerEl.getBoundingClientRect();
+    const y = r.bottom + 8;
+    
+    let lums = [];
+    for (const f of [0.2, 0.35, 0.5, 0.65, 0.8]) {
+      const el = document.elementFromPoint(r.left + r.width * f, y);
+      if (!el || headerEl.contains(el)) continue;
+      lums.push(bgLuminance(el));
+    }
+    if (!lums.length) return;
+
+    const isLight = document.body.classList.contains("light");
+    // Sort to find the "worst" contrast offenders
+    // Light theme (dark text) -> worst is darkest (lowest lum) -> ascending
+    // Dark theme (light text) -> worst is lightest (highest lum) -> descending
+    lums.sort((a, b) => isLight ? a - b : b - a);
+
+    // Average the worst ~40% of the strip (e.g. 2 out of 5 points)
+    const worstCount = Math.max(1, Math.round(lums.length * 0.4));
+    let sum = 0;
+    for (let i = 0; i < worstCount; i++) {
+      sum += lums[i];
+    }
+    const lum = sum / worstCount;
+
+    if (isLight) {
+      // Light theme = dark text: a LIGHT scrim that appears only over dark
+      // content (and fades out over light content for a clean look).
+      headerEl.style.setProperty("--nav-scrim-rgb", "255, 255, 255");
+      headerEl.style.setProperty(
+        "--nav-scrim",
+        Math.min(0.55, (1 - lum) * 0.62).toFixed(3)
+      );
+    } else {
+      // Dark theme = white text: a DARK scrim that strengthens over light
+      // content and stays subtle (but present) over dark content.
+      headerEl.style.setProperty("--nav-scrim-rgb", "0, 0, 0");
+      headerEl.style.setProperty("--nav-scrim", (0.16 + lum * 0.3).toFixed(3));
+    }
+  };
+
   const resetOnTop = () => {
-    // Note: card scroll-reveal is intentionally NOT replayed. It plays once per page visit 
+    // Note: card scroll-reveal is intentionally NOT replayed. It plays once per page visit
     // (fresh load or SPA navigation re-runs setupReveals), not every time the user scrolls back to the top.
     if (aboutMorph) aboutMorph.reset();
   };
   const onScroll = () => {
     scrollTopBtn.classList.toggle("is-visible", window.scrollY > 400);
+    updateHeaderContrast();
     const nowTop = window.scrollY <= 2;
     if (nowTop && !atTop) resetOnTop();
     atTop = nowTop;
@@ -595,6 +706,23 @@ document.addEventListener("DOMContentLoaded", () => {
       button.addEventListener("click", () => window.print());
     });
 
+    // Certificate links: reveal the arrow icon only if the file actually exists
+    // in /reports (HEAD request). Upload a file matching data-cert and it shows
+    // automatically; otherwise the icon stays hidden.
+    document.querySelectorAll(".milestone-cert[data-cert]").forEach((link) => {
+      if (link.dataset.checked) return;
+      link.dataset.checked = "1";
+      const url = new URL(link.dataset.cert, document.baseURI).href;
+      fetch(url, { method: "HEAD" })
+        .then((res) => {
+          if (res.ok) {
+            link.href = url;
+            link.classList.add("is-available");
+          }
+        })
+        .catch(() => {});
+    });
+
     // Contact form
     const contactForm = document.getElementById("contact-form");
     if (contactForm && !contactForm.dataset.bound) {
@@ -684,11 +812,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <circle class="cat-blush" cx="72" cy="64" r="5.5"/>
         <g class="cat-eye cat-eye-l">
           <ellipse class="cat-eye-white" cx="37" cy="54" rx="8" ry="10"/>
-          <circle class="cat-pupil" cx="37" cy="55" r="4"/>
+          <g class="cat-pupil-wrap"><circle class="cat-pupil" cx="37" cy="55" r="4"/></g>
         </g>
         <g class="cat-eye cat-eye-r">
           <ellipse class="cat-eye-white" cx="63" cy="54" rx="8" ry="10"/>
-          <circle class="cat-pupil" cx="63" cy="55" r="4"/>
+          <g class="cat-pupil-wrap"><circle class="cat-pupil" cx="63" cy="55" r="4"/></g>
         </g>
         <path class="cat-eye-happy" d="M30 56 q7 -8 14 0"/>
         <path class="cat-eye-happy" d="M56 56 q7 -8 14 0"/>
@@ -698,7 +826,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <path class="cat-mouth mouth-neutral" d="M50 67 q-5 5 -10 1 M50 67 q5 5 10 1"/>
         <path class="cat-mouth mouth-happy" d="M38 68 q12 11 24 0"/>
         <path class="cat-mouth mouth-angry" d="M40 74 q10 -7 20 0"/>
-        <ellipse class="cat-mouth mouth-scared" cx="50" cy="72" rx="5" ry="7"/>
+        <path class="cat-mouth mouth-annoyed" d="M 42 70 L 58 70" />
         <path class="cat-sweat" d="M84 39 q-4 7 0 11 q4 -4 0 -11 Z"/>
       </svg>`;
 
@@ -718,7 +846,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="footer-col footer-cat-col">
           <button class="footer-cat" type="button" aria-label="Pet the cat">${catSvg}</button>
           <span class="footer-cat-hint">
-            hover only, no clicking me!
+            Hover only. No clicking!
           </span>
         </div>
       </div>
@@ -729,7 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let catTimer = null;
 
     const tempMood = (cls, ms) => {
-      cat.classList.remove("cat--happy", "cat--angry", "cat--scared", "cat--react");
+      cat.classList.remove("cat--happy", "cat--angry", "cat--annoyed", "cat--react");
       cat.classList.add(cls);
       clearTimeout(catTimer);
       catTimer = setTimeout(() => {
@@ -739,14 +867,48 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     cat.addEventListener("mouseenter", () => {
-      if (!cat.classList.contains("cat--angry") && !cat.classList.contains("cat--scared")) {
+      if (!cat.classList.contains("cat--angry") && !cat.classList.contains("cat--annoyed")) {
         cat.classList.add("cat--happy");
       }
     });
     cat.addEventListener("mouseleave", () => cat.classList.remove("cat--happy"));
+
+    // Spam-click → the cat rages and bolts off the screen, then bounces back.
+    let clickTimes = [];
+    let fleeing = false;
+    const fleeCat = () => {
+      if (fleeing) return;
+      fleeing = true;
+      clearTimeout(catTimer);
+      cat.classList.remove(
+        "cat--happy",
+        "cat--angry",
+        "cat--annoyed",
+        "cat--react",
+        "ui-clicked"
+      );
+      cat.classList.add("cat--rage", "cat--flee");
+      const onDone = (e) => {
+        if (e.animationName !== "catFlee") return;
+        cat.removeEventListener("animationend", onDone);
+        cat.classList.remove("cat--rage", "cat--flee");
+        fleeing = false;
+      };
+      cat.addEventListener("animationend", onDone);
+    };
+
     cat.addEventListener("click", (event) => {
       event.preventDefault();
-      tempMood(Math.random() < 0.5 ? "cat--angry" : "cat--scared", 1200);
+      if (fleeing) return;
+      const now = Date.now();
+      clickTimes = clickTimes.filter((t) => now - t < 1400);
+      clickTimes.push(now);
+      if (clickTimes.length >= 5) {
+        clickTimes = [];
+        fleeCat();
+        return;
+      }
+      tempMood(Math.random() < 0.5 ? "cat--angry" : "cat--annoyed", 1200);
     });
 
     // Reacting to any footer link click
@@ -762,14 +924,43 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!r.width) return;
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
-        const ang = Math.atan2(event.clientY - cy, event.clientX - cx);
-        const dist = Math.min(3.2, Math.hypot(event.clientX - cx, event.clientY - cy) / 50);
-        const dx = (Math.cos(ang) * dist).toFixed(2);
-        const dy = (Math.sin(ang) * dist).toFixed(2);
+        
+        let dx, dy;
+        if (cat.classList.contains("cat--annoyed")) {
+          // Bombastic side-eye: extreme horizontal glare, no vertical tracking
+          const isRight = event.clientX > cx;
+          dx = isRight ? 4.5 : -4.5;
+          dy = 0;
+        } else {
+          const ang = Math.atan2(event.clientY - cy, event.clientX - cx);
+          const dist = Math.min(3.2, Math.hypot(event.clientX - cx, event.clientY - cy) / 50);
+          dx = (Math.cos(ang) * dist).toFixed(2);
+          dy = (Math.sin(ang) * dist).toFixed(2);
+        }
+        
         pupils.forEach((p) => p.setAttribute("transform", `translate(${dx} ${dy})`));
       },
       { passive: true }
     );
+
+    const scheduleBlink = () => {
+      // Random interval between 2.5s and 6.5s
+      const delay = 2500 + Math.random() * 4000;
+      setTimeout(() => {
+        // Skip blink if the cat is fleeing or smiling (eyes already closed)
+        if (fleeing || cat.classList.contains("cat--happy")) {
+          scheduleBlink();
+          return;
+        }
+        
+        cat.classList.add("cat--blink");
+        setTimeout(() => {
+          cat.classList.remove("cat--blink");
+          scheduleBlink();
+        }, 150);
+      }, delay);
+    };
+    scheduleBlink();
   };
 
   /* ==================== SPA router ==================== */
@@ -830,6 +1021,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initPageFeatures();
     closeMenu();
     scrollToHashOrTop(href);
+    requestAnimationFrame(updateHeaderContrast);
   };
 
   document.addEventListener("click", (event) => {
@@ -877,6 +1069,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const afterLayout = () => {
     updatePill(false);
     if (aboutMorph) aboutMorph.measure();
+    updateHeaderContrast();
   };
   window.addEventListener("resize", () => {
     if (aboutMorph) aboutMorph.measure(true);

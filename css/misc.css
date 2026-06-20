@@ -514,10 +514,7 @@ footer.site-footer {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.mouth-scared {
-  fill: #241f2b;
-  stroke: none;
-}
+
 .cat-brow {
   stroke: #fff;
   stroke-width: 2.6;
@@ -553,7 +550,7 @@ footer.site-footer {
 .cat-sweat,
 .mouth-happy,
 .mouth-angry,
-.mouth-scared {
+.mouth-annoyed {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -591,18 +588,23 @@ footer.site-footer {
   opacity: 1;
 }
 
-/* Scared (click) */
-.footer-cat.cat--scared .cat-eye {
-  transform: scale(1.22);
+/* Annoyed (click) */
+.footer-cat.cat--annoyed .cat-eye {
+  transform: scaleY(0.5);
 }
-.footer-cat.cat--scared .cat-sweat {
-  opacity: 1;
+.footer-cat.cat--annoyed .cat-pupil-wrap {
+  transform: scaleX(0.35) scaleY(1.1) !important; /* Sharp judgmental slit */
 }
-.footer-cat.cat--scared .mouth-neutral {
+.footer-cat.cat--annoyed .mouth-neutral {
   opacity: 0;
 }
-.footer-cat.cat--scared .mouth-scared {
+.footer-cat.cat--annoyed .mouth-annoyed {
   opacity: 1;
+}
+
+/* Blink */
+.footer-cat.cat--blink .cat-eye {
+  transform: scaleY(0.05) !important;
 }
 
 /* React (footer link clicked) - startled */
@@ -612,8 +614,103 @@ footer.site-footer {
 .footer-cat.cat--react .mouth-neutral {
   opacity: 0;
 }
-.footer-cat.cat--react .mouth-scared {
+.footer-cat.cat--react .mouth-annoyed {
   opacity: 1;
+}
+
+/* Theme-reactive pupils: a real cat narrows to a vertical slit in bright light
+   and dilates to a wide round pupil in the dark. The scale lives on a wrapper
+   <g> so it composes with (and never fights) the per-frame cursor tracking
+   transform on the inner <circle>. */
+.cat-pupil-wrap {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(1.2); /* dark theme: dilated & round (cute) */
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+body.light .cat-pupil-wrap {
+  transform: scaleX(0.32) scaleY(1.28); /* light theme: vertical slit */
+}
+
+/* Super-exaggerated rage face (shown while the cat storms off). */
+.footer-cat.cat--rage .cat-brow {
+  opacity: 1;
+}
+.footer-cat.cat--rage .cat-eye {
+  transform: scaleY(0.4);
+}
+.footer-cat.cat--rage .mouth-neutral,
+.footer-cat.cat--rage .cat-eye-happy {
+  opacity: 0;
+}
+.footer-cat.cat--rage .mouth-angry {
+  opacity: 1;
+}
+.footer-cat.cat--rage .footer-cat-svg {
+  filter: saturate(1.6) brightness(1.08)
+    drop-shadow(0 0 6px rgba(255, 70, 70, 0.55));
+}
+
+/* Spam-click flee: the cat bounds off the top of the screen with squash &
+   stretch, hangs off-screen for a moment, then bounces back. */
+.footer-cat.cat--flee {
+  position: relative;
+  z-index: 200;
+  pointer-events: none;
+  transform-origin: bottom center;
+  /* !important so it wins over the global click-squish (uiPop, also !important),
+     letting the squishy click stay on for normal clicks. */
+  animation: catFlee 6.4s cubic-bezier(0.45, 0, 0.55, 1) forwards !important;
+}
+
+/* Bounds off the side of the screen in arcs with squash & stretch, hangs off
+   to the right for a moment, then bounds back. */
+@keyframes catFlee {
+  0% {
+    transform: translate(0, 0) scale(1, 1);
+  }
+  6% {
+    transform: translate(-3%, 4%) scale(1.3, 0.7);
+  } /* anticipation crouch + lean back */
+  14% {
+    transform: translate(16vw, -12vh) scale(0.85, 1.15);
+  } /* hop 1 - airborne, stretched vertically */
+  20% {
+    transform: translate(22vw, 0) scale(1.32, 0.68);
+  } /* land 1 - squash */
+  29% {
+    transform: translate(48vw, -13vh) scale(0.85, 1.15);
+  } /* hop 2 - airborne, stretched vertically */
+  35% {
+    transform: translate(54vw, 0) scale(1.32, 0.7);
+  } /* land 2 - squash */
+  44% {
+    transform: translate(122vw, -9vh) scale(0.85, 1.15);
+  } /* leap off-screen to the right */
+  72% {
+    transform: translate(122vw, 0) scale(1, 1);
+  } /* hang off-screen ~1.8s */
+  82% {
+    transform: translate(46vw, 3%) scale(1.3, 0.72);
+  } /* bound back - land squash */
+  90% {
+    transform: translate(14vw, -8vh) scale(0.85, 1.15);
+  } /* hop - airborne, stretched vertically */
+  96% {
+    transform: translate(0, 4%) scale(1.3, 0.7);
+  } /* final landing squash */
+  100% {
+    transform: translate(0, 0) scale(1, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-pupil-wrap {
+    transition: none;
+  }
+  .footer-cat.cat--flee {
+    animation: none;
+  }
 }
 
 /* Footer light theme */
