@@ -7,34 +7,92 @@ A clean, responsive personal portfolio built with plain HTML, CSS, and JavaScrip
 
 ## Overview
 
-This portfolio was built from scratch as a personal project to establish a professional web presence while studying for my BSc in Computer Science (Interactive Media) at Universiti Teknikal Malaysia Melaka (UTeM).
+This portfolio was designed and developed from scratch without frameworks, libraries, or build tools. The project serves as both a personal showcase and a long-term professional portfolio for internships, networking, and future career opportunities.
 
-The design follows a dark-first aesthetic with a toggleable light theme, minimal use of colour, and deliberate use of whitespace. The focus is on content clarity and smooth interaction without visual noise.
+The design emphasizes:
+- Clean and modern aesthetics
+- Strong visual hierarchy
+- Responsive user experience
+- Smooth interactions and animations
+- Accessibility and readability
+- Consistent design language
+
+The design follows a dark-first approach with optional light mode support, subtle motion design, glassmorphism-inspired effects, and deliberate use of whitespace. The focus is on content clarity and smooth interaction without visual noise.
 
 ---
 
-## Features
+<h2>Portfolio Preview</h2>
 
-### Dark / Light Theme Toggle
-A theme switch is available on every page. The user's preference is persisted via `localStorage` so it carries across pages and sessions without flashing on load.
+<p align="center">
+  <img src="assets/readme/homepage.png" width="800">
+</p>
 
-### Skills Filter System
-The Skills & Competency page features an interactive filter that lets visitors sort skills by category: **All**, **Languages**, **Tools**, **Design**, or **Personal Qualities**. Each skill card carries a `data-category` attribute that the filter reads, switching tabs instantly shows or hides the relevant cards without a page reload.
+<p align="center">
+  <img src="assets/readme/about.png" width="48%">
+  <img src="assets/readme/education.png" width="48%">
+</p>
 
-### Project Category Filter
-The Projects page has the same filtering pattern, letting visitors sort work by type: **All**, **Web Development**, **System Design**, **Creative Content**, or **Personal Project**. Each project card is tagged accordingly.
+<p align="center">
+  <img src="assets/readme/projects.png" width="48%">
+  <img src="assets/readme/skills.png" width="48%">
+</p>
 
-### CGPA Tracker
-The Education page includes a semester-by-semester academic record for the UTeM degree programme. Completed semesters display their CGPA, future semesters are reserved as empty slots. The tracker updates as new results are added.
+<p align="center">
+  <img src="assets/readme/contact.png" width="800">
+</p>
 
-### SPM Subject Breakdown Toggle
-The secondary education section includes a collapsible panel showing individual subject grades from the Malaysian SPM examination. The breakdown is hidden by default and revealed on interaction to keep the page clean.
+---
 
-### Breadcrumb Navigation
-Every sub-page displays a contextual breadcrumb (`Home › Page Name`) below the navigation bar, making it easy to navigate within the site.
+## Key Features
 
-### Contact Form
-The contact page includes a form for direct messages with no server required. Fields include name, email, and message, all with required validation and correct input types.
+### User Experience & Interface
+- Fully responsive layout optimized for desktop, tablet, and mobile devices
+- Light and dark theme support with persistent user preferences
+- Floating navigation bar with adaptive sizing
+- Breadcrumb navigation for improved wayfinding
+- Mobile-friendly scroll-to-top button
+- Consistent card-based information architecture
+- Accessible typography and colour contrast
+- Modern minimalist design approach
+
+### Interactive Features
+- Dynamic project category filtering
+- Interactive skills categorization
+- Animated navigation indicators
+- Smooth page transitions
+- Hover and click micro-interactions
+- Expandable academic information sections
+- Theme-aware interface elements
+- Adaptive navigation transparency
+
+### Academic Showcase
+- Academic timeline
+- Semester-by-semester CGPA tracker
+- MUET achievement display
+- SPM results breakdown
+- Dean's List achievements
+- Online resume with download support
+- Dedicated project showcase pages
+
+### Unique Features
+**Interactive Cyber Cat**
+
+A custom mascot integrated into the portfolio that responds to user interactions.
+
+Features include:
+- Cursor hover reactions
+- Click interactions
+- Theme-aware pupil animations
+
+**Hero Section Effects**
+
+The homepage includes:
+
+- Animated gradient background
+- Texture overlays
+- Dynamic blur-wave title animation
+- Smooth card transitions
+- Glassmorphism-inspired interface elements
 
 ---
 
@@ -79,47 +137,6 @@ No npm, no bundler, no framework. The entire site runs by opening an HTML file i
 
 ---
 
-## Project Structure
-
-```
-/
-├── index.html
-├── about.html
-├── education.html
-├── projects.html
-├── qualities.html
-├── contact.html
-├── resume.html
-├── 404.html
-├── reports/
-│   └──... (list of all project reports)
-├── css/
-│   ├── achievements.css
-│   ├── base.css
-│   ├── education.css
-│   ├── homepage.css
-│   ├── misc.css
-│   ├── projects.css
-│   └── skills.css
-├── assets/
-│   ├── favicon.png
-│   ├── profile-photo.jpg
-│   ├── utem-logo.png
-│   ├── uitm-logo.png
-│   └── iqkl-logo.jpg
-├── projects/
-│   ├── Attention Detector.html
-│   ├── Workshop 1.html
-│   ├── Network-design.html
-│   ├── CineTrack.html
-│   └── CS-TCA.html
-└── script.js
-
-```
-
-
----
-
 ## Deployment
 
 The site is deployed via **GitHub Pages** from the `main` branch root. Any push to `main` triggers an automatic redeploy - no CI/CD configuration needed.
@@ -132,12 +149,12 @@ Custom 404 handling is provided by `404.html` in the repo root, which GitHub Pag
 
 | Detail | |
 |---|---|
-| Degree | BSc Computer Science (Interactive Media) |
+| Degree | Bachelor of Computer Science (Interactive Media) |
 | University | Universiti Teknikal Malaysia Melaka (UTeM) |
 | Status | Ongoing - Year 2 of 3 |
 | Dean's List | Semester 1, 2, and 3 |
 
-The base layout of this portfolio was built independently before any coursework requirement, a personal project to establish a professional web presence early. It was later expanded in greater depth as part of a coursework assignment, adding additional pages, interactivity, and polish beyond what is required.
+The base layout of this portfolio was built independently before any coursework requirement, a personal project to establish a professional web presence early. It was later expanded in greater depth as part of a Human Computer Interaction (HCI) coursework project, adding additional pages, interactivity, and polish beyond what is required.
 
 ---
 
@@ -153,4 +170,6 @@ The base layout of this portfolio was built independently before any coursework 
 
 ## License
 
-This project is open for reference and inspiration. Please do not copy the content, copy directly, or republish as your own portfolio. Code structure and implementation patterns are fine to adapt.
+This repository is provided for learning, inspiration, and reference purposes.
+
+You are welcome to study the code structure, implementation techniques, and design patterns used throughout the project. However, please do not directly copy, redistribute, or republish the portfolio content, assets, branding, or personal information as your own work.
