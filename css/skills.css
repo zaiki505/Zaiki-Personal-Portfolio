@@ -358,7 +358,7 @@ body.light .skill-tier-block.tier-beginner .skill-card-v2:hover {
   filter: blur(13px);
   opacity: 0;
 }
-.skill-card-v2.truly-advanced:hover::before {
+.skill-card-v2.truly-advanced:active::before {
   animation: trulyRainbow 3s ease forwards;
 }
 @keyframes trulyRainbow {
@@ -403,14 +403,14 @@ body.light .skill-tier-block.tier-beginner .skill-card-v2:hover {
     transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
     filter 0.3s ease;
 }
-.skill-card-v2.truly-advanced:hover::after {
+.skill-card-v2.truly-advanced:active::after {
   opacity: 1;
   transform: translateX(-50%) translateY(0) scale(1);
   filter: blur(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skill-card-v2.truly-advanced:hover::before {
+  .skill-card-v2.truly-advanced:active::before {
     animation: none;
   }
 }

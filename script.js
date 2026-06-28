@@ -223,14 +223,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateHeaderContrast = () => {
     if (!headerEl) return;
     const r = headerEl.getBoundingClientRect();
-    const y = r.bottom + 8;
-    
+    const y = r.top + r.height * 0.5;
+
+    headerEl.style.pointerEvents = "none";
     let lums = [];
     for (const f of [0.2, 0.35, 0.5, 0.65, 0.8]) {
       const el = document.elementFromPoint(r.left + r.width * f, y);
-      if (!el || headerEl.contains(el)) continue;
+      if (!el) continue;
       lums.push(bgLuminance(el));
     }
+    headerEl.style.pointerEvents = "";
     if (!lums.length) return;
 
     const isLight = document.body.classList.contains("light");
@@ -764,7 +766,7 @@ document.addEventListener("DOMContentLoaded", () => {
         statusEl.classList.add("is-visible");
       };
 
-      contactForm.addEventListener("submit", (e) => {
+      contactForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
@@ -780,26 +782,43 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const subject = encodeURIComponent(`Portfolio enquiry from ${name}`);
-        const body = encodeURIComponent(
-          [
-            "Hi Uzair,",
-            "",
-            message,
-            "",
-            "——————————————————",
-            `Name:   ${name}`,
-            `Email:  ${email}`,
-            "",
-            "Sent from your portfolio contact form.",
-          ].join("\r\n")
-        );
-        window.location.href = `mailto:shamsulzire@gmail.com?subject=${subject}&body=${body}`;
-        showStatus(
-          "Opening your email app… if nothing happens, email shamsulzire@gmail.com directly.",
-          "success"
-        );
-        contactForm.reset();
+        const btn = contactForm.querySelector(".contact-submit");
+        const origText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Sending…";
+
+        try {
+          const token = await new Promise((resolve) =>
+            grecaptcha.ready(() =>
+              grecaptcha.execute("6Ld0pDotAAAAAN1yRtyUR2TKwSqODxk665vKhQJ2", { action: "contact" }).then(resolve)
+            )
+          );
+          const res = await fetch("https://formspree.io/f/xojowbpl", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ name, email, message, "g-recaptcha-response": token }),
+          });
+          if (res.ok) {
+            showStatus("Message sent! I'll get back to you soon.", "success");
+            contactForm.reset();
+          } else {
+            const data = await res.json().catch(() => ({}));
+            showStatus(data.error || "Something went wrong. Try emailing directly.", "error");
+          }
+        } catch {
+          showStatus("Network error. Try emailing shamsulzire@gmail.com directly.", "error");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
+      });
+    }
+
+    // Media screenshot lightbox bindings
+    const mediaImgs = [...document.querySelectorAll(".media-platform img")];
+    if (mediaImgs.length && typeof openLightbox === "function") {
+      mediaImgs.forEach((img, i) => {
+        img.addEventListener("click", () => openLightbox(mediaImgs, i));
       });
     }
   };
@@ -1089,6 +1108,65 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       navigateTo(location.href, false);
     }
+  });
+
+  /* ==================== Image lightbox (built once) ==================== */
+  const _lb = document.createElement("div");
+  _lb.id = "img-lightbox";
+  _lb.className = "img-lightbox";
+  _lb.setAttribute("role", "dialog");
+  _lb.setAttribute("aria-modal", "true");
+  _lb.setAttribute("aria-label", "Image viewer");
+  _lb.innerHTML = `
+    <div class="lightbox-backdrop"></div>
+    <div class="lightbox-content"><img class="lightbox-img" src="" alt="" /></div>
+    <button class="lightbox-close" aria-label="Close image viewer">✕</button>
+    <button class="lightbox-prev" aria-label="Previous image">&#8249;</button>
+    <button class="lightbox-next" aria-label="Next image">&#8250;</button>
+  `;
+  document.body.appendChild(_lb);
+
+  let _lbImgs = [], _lbIdx = 0, _lbTrigger = null;
+  const _lbImg   = _lb.querySelector(".lightbox-img");
+  const _lbClose = _lb.querySelector(".lightbox-close");
+  const _lbPrev  = _lb.querySelector(".lightbox-prev");
+  const _lbNext  = _lb.querySelector(".lightbox-next");
+
+  const openLightbox = (imgs, idx) => {
+    _lbImgs = imgs;
+    _lbIdx  = idx;
+    _lbTrigger = document.activeElement;
+    _lbImg.src = imgs[idx].src;
+    _lbImg.alt = imgs[idx].alt;
+    _lbPrev.hidden = imgs.length <= 1;
+    _lbNext.hidden = imgs.length <= 1;
+    _lb.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+    _lbClose.focus();
+  };
+
+  const closeLightbox = () => {
+    _lb.classList.remove("is-open");
+    document.body.style.overflow = "";
+    if (_lbTrigger) _lbTrigger.focus();
+  };
+
+  const navigateLightbox = (dir) => {
+    _lbIdx = (_lbIdx + dir + _lbImgs.length) % _lbImgs.length;
+    _lbImg.src = _lbImgs[_lbIdx].src;
+    _lbImg.alt = _lbImgs[_lbIdx].alt;
+  };
+
+  _lb.querySelector(".lightbox-backdrop").addEventListener("click", closeLightbox);
+  _lbClose.addEventListener("click", closeLightbox);
+  _lbPrev.addEventListener("click", () => navigateLightbox(-1));
+  _lbNext.addEventListener("click", () => navigateLightbox(1));
+
+  document.addEventListener("keydown", (e) => {
+    if (!_lb.classList.contains("is-open")) return;
+    if (e.key === "Escape") { e.preventDefault(); closeLightbox(); }
+    if (e.key === "ArrowLeft")  navigateLightbox(-1);
+    if (e.key === "ArrowRight") navigateLightbox(1);
   });
 
   /* ==================== Initial page setup ==================== */

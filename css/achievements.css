@@ -828,13 +828,14 @@ body.light .milestone-text span {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--highlight);
+  color: var(--lightFont);
   font-weight: bold;
   text-decoration: none;
   border-radius: 8px;
   padding: 0.35rem 0.75rem;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--highlight);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(167, 84, 255, 0.4);
   transition:
     background 0.3s ease,
     color 0.3s ease,
@@ -843,8 +844,10 @@ body.light .milestone-text span {
 }
 
 .external-link:hover {
-  background: rgba(var(--highlight) 0.15);
-  color: var(--lightFont);
+  transform: translateY(-2px);
+  background: lab(from var(--highlight) 60 a b);
+  color: var(--darkFont);
+  box-shadow: 0 4px 20px rgba(167, 84, 255, 0.716);
 }
 
 .external-link:active {
@@ -853,13 +856,15 @@ body.light .milestone-text span {
 }
 
 body.light .external-link {
-  background: rgb(241, 241, 241);
+  background: var(--highlight);
   border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(167, 84, 255, 0.4);
 }
 
 body.light .external-link:hover {
-  background: rgba(var(--highlight) / 0.15);
-  color: var(--darkFont);
+  background: lab(from var(--highlight) 40 a b);
+  color: var(--lightFont);
+  box-shadow: 0 4px 20px rgba(167, 84, 255, 0.716);
 }
 
 .meta-list {
@@ -1581,7 +1586,6 @@ footer {
 .themebutton {
   display: inline-flex;
   border-radius: 12px;
-  background-color: #2a2a2a;
   border: none;
   font-weight: bolder;
   color: var(--lightFont);
@@ -1598,6 +1602,7 @@ footer {
     margin-left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.55s ease,
     filter 0.8s ease,
+    box-shadow 0.8s ease,
     transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   align-items: center;
   justify-content: center;
@@ -1635,18 +1640,6 @@ body.light .menubutton {
 
 body.light .menubutton:hover {
   background: lab(from var(--highlight) 40 a b);
-}
-
-.themebutton:hover {
-  border-radius: 15px;
-  background-color: lab(from var(--dark) 88 a b);
-  transform: scale(0.9);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-}
-
-.themebutton:active {
-  transform: scale(0.2);
-  box-shadow: 0 2px 6px rgb(0, 0, 0);
 }
 
 /* Light Theme (toggled with .light) */
@@ -1707,8 +1700,8 @@ body.light .hero .cta-primary {
 }
 
 body.light .hero .cta-primary:hover {
-  background: lab(from var(--highlight) 80 a b);
-  color: var(--lightFont);
+  background: lab(from var(--highlight) 70 a b);
+  color: var(--darkFont);
   box-shadow: 0 10px 20px rgba(123, 0, 255, 0.2);
 }
 
@@ -1866,26 +1859,25 @@ body.light .contact-submit:focus-visible {
 }
 
 body.light .themebutton {
-  background-color: #2a2a2a;
+  background-color: lab(from #1e1d1d 30 a b);
   color: var(--lightFont);
 }
 
 body.light .themebutton:hover,
 body.light .back-link:hover {
   border-radius: 15px;
-  background-color: lab(from var(--dark) 40 a b);
+  background-color: #1e1d1d;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
 body.light .themebutton:active {
-  transform: scale(0.9);
-  box-shadow: 0 2px 6px rgb(0, 0, 0);
+  box-shadow: 0 0 6px rgb(0, 0, 0);
 }
 
 /* Dark Theme button (default) */
 .themebutton {
-  background: lab(from var(--lightFont) 80 a b);
-  color: #333;
+  background: lab(from var(--light) 90 a b);
+  color: #2e2e2e;
 }
 
 .themebutton:hover {
@@ -1897,7 +1889,7 @@ body.light .themebutton:active {
 
 .themebutton:active {
   transform: scale(0.9);
-  box-shadow: 0 -2px 5px rgb(255, 255, 255);
+  box-shadow: 0 0 6px rgb(255, 255, 255);
 }
 
 .themebutton::before {

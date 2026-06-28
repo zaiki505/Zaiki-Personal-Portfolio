@@ -335,8 +335,8 @@ body.light .hero-noise {
 .hero .cta-primary:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 28px rgba(167, 84, 255, 0.55);
-  color: rgba(var(--highlight) / 0.5);
-  background: #d7abff;
+  color: var(--darkFont);
+  background: #c893fa;
 }
 
 .hero .cta-secondary {
@@ -357,7 +357,7 @@ body.light .hero-noise {
 }
 
 .hero .cta-secondary:hover {
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(0, 0, 0, 0.407);
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
@@ -783,14 +783,13 @@ body.light .hero-description {
 }
 
 body.light .hero .cta-secondary {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(245, 245, 245, 0.959);
+  border-color: rgba(0, 0, 0, 0.248);
   color: var(--darkFont);
 }
 
 body.light .hero .cta-secondary:hover {
-  background: rgba(0, 0, 0, 0.1);
-  color: var(--darkFont);
+  background: rgba(255, 255, 255, 0.392);
 }
 
 body.light .bento-card {
