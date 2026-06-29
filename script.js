@@ -16,7 +16,7 @@ if ("scrollRestoration" in history) {
 
 /* A little hello for anyone poking around in DevTools. */
 console.log(
-  "%c👀 Since you're here — I'm open for work.%c\n✉️  shamsulzire@gmail.com",
+  "%c👀 Since you're here - I'm open for work.%c\n✉️  shamsulzire@gmail.com",
   "font-size:14px;font-weight:bold;color:#a754ff;line-height:1.7;",
   "font-size:12px;color:#9b9b9b;"
 );
@@ -1131,10 +1131,12 @@ document.addEventListener("DOMContentLoaded", () => {
   _lb.setAttribute("aria-label", "Image viewer");
   _lb.innerHTML = `
     <div class="lightbox-backdrop"></div>
-    <div class="lightbox-content"><img class="lightbox-img" src="" alt="" /></div>
+    <div class="lightbox-nav-row">
+      <button class="lightbox-prev" aria-label="Previous image">&#8249;</button>
+      <div class="lightbox-content"><img class="lightbox-img" src="" alt="" /></div>
+      <button class="lightbox-next" aria-label="Next image">&#8250;</button>
+    </div>
     <button class="lightbox-close" aria-label="Close image viewer">✕</button>
-    <button class="lightbox-prev" aria-label="Previous image">&#8249;</button>
-    <button class="lightbox-next" aria-label="Next image">&#8250;</button>
   `;
   document.body.appendChild(_lb);
 
