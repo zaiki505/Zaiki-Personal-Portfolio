@@ -126,6 +126,21 @@
   font-weight: 500;
 }
 
+.meta-tool-tag,
+.outcome-tag {
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.meta-tool-tag:hover,
+.outcome-tag:hover {
+  background: rgba(167, 84, 255, 0.08);
+  border-color: rgba(167, 84, 255, 0.22);
+  transform: translateY(-2px);
+}
+
 .view-more-container {
   text-align: center;
   margin-top: clamp(1.5rem, 3vw, 2.25rem);
@@ -284,4 +299,3 @@ body.light .filter-btn.active {
   background-color: rgba(215, 170, 255, 0.556);
   box-shadow: 0 6px 18px rgba(167, 84, 255, 0.25);
 }
-

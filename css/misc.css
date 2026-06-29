@@ -1,3 +1,23 @@
+/* ==================== RECAPTCHA ==================== */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+
+.recaptcha-notice {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+.recaptcha-notice a {
+  color: #aa80e4;
+  text-decoration: none;
+}
+
+.recaptcha-notice a:hover {
+  color: #b89fd4;
+}
+
 /* ==================== LOGO + HOME AFFORDANCE ==================== */
 .logo a {
   position: relative;

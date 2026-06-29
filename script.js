@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ==================== Squish click animation (delegated) ==================== */
   document.addEventListener("click", (event) => {
     const interactive = event.target.closest(
-      "a, button, .bento-card, .project-card-modern, .project-card, .timeline-item, .evidence-card, .edu-card, .milestone-card, .gallery-item, .skill-card-v2, .quality-card, .about-block, .spm-summary, .skill-tier-header, .feature-card, .tech-concept-item, .contact-pill"
+      "a, button, .bento-card, .project-card-modern, .project-card, .timeline-item, .evidence-card, .edu-card, .milestone-card, .gallery-item, .skill-card-v2, .quality-card, .about-block, .spm-summary, .skill-tier-header, .feature-card, .tech-concept-item, .contact-pill, .outcome-tag, .meta-tool-tag"
     );
     if (!interactive || interactive.closest("[data-no-squish], .no-squish")) return;
 
@@ -160,6 +160,18 @@ document.addEventListener("DOMContentLoaded", () => {
     indicator.appendChild(fill);
     navList.appendChild(indicator);
     window.addEventListener("resize", () => updatePill(false));
+
+    navList.addEventListener("click", (e) => {
+      const link = e.target.closest("a");
+      if (!link || link.getAttribute("aria-current") !== "page") return;
+      if (indicator.classList.contains("is-gliding")) return;
+      indicator.classList.remove("is-clicking");
+      void indicator.offsetWidth;
+      indicator.classList.add("is-clicking");
+      indicator.addEventListener("animationend", () => indicator.classList.remove("is-clicking"), { once: true });
+      link.classList.add("pill-sync");
+      link.addEventListener("animationend", () => link.classList.remove("pill-sync"), { once: true });
+    });
   }
 
   /* ==================== Scroll-to-top button (mobile) ==================== */

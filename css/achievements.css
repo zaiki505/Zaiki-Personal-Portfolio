@@ -554,19 +554,19 @@ body.light .spm-details[open] {
 }
 
 .milestone-cert svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 .milestone-cert.is-available {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1.1);
   pointer-events: auto;
 }
 
 .milestone-cert.is-available:hover {
   background: rgba(167, 84, 255, 0.22);
-  transform: scale(1.12);
+  transform: scale(1.2);
 }
 
 /* Give the card text a little room so it never runs under the icon. */

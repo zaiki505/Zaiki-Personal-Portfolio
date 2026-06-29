@@ -33,7 +33,7 @@
   from {
     opacity: 0;
     filter: blur(18px);
-    transform: translateX(-50%) translateY(-7rem) scaleX(0.45);
+    transform: translateX(-50%) translateY(-9rem) scaleX(0.35);
   }
 
   to {
@@ -138,10 +138,8 @@ body {
   padding-top: 5rem;
 }
 
-/* While the theme is toggling, cross-fade colours on EVERY element (not just the
-   body) with a smooth ease-in-out, so the whole page transitions seamlessly.
-   Applied only during the toggle (a class is added then removed in JS) so it
-   never affects normal interactions. The cat pupils are excluded so their
+/* While the theme is toggling, cross-fade colours on EVERY element with a smooth ease-in-out, so the whole page transitions seamlessly.
+   Applied only during the toggle (a class is added then removed in JS) so it never affects normal interactions. The cat pupils are excluded so their
    shape-morph keeps its own springy timing. */
 body.theme-transition,
 body.theme-transition *:not(.cat-pupil-wrap):not(.cat-pupil) {
@@ -436,6 +434,24 @@ nav > * {
   }
 }
 
+/* bounce in-place when re-clicking the current page link */
+.nav-indicator.is-clicking .nav-indicator-fill,
+.nav-links a:active {
+  animation: navPillClick 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes navPillClick {
+  0%   { transform: scaleX(1)    scaleY(1); }
+  30%  { transform: scaleX(1.12) scaleY(0.78); }
+  60%  { transform: scaleX(0.95) scaleY(1.1); }
+  100% { transform: scaleX(1)    scaleY(1); }
+}
+
+/* current-page link text mirrors the pill bounce instead of uiPop */
+.nav-links a.pill-sync.ui-clicked {
+  animation: navPillClick 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
 /* Keep the links painted above the gliding indicator */
 .nav-links a {
   z-index: 1;
@@ -468,6 +484,7 @@ nav > * {
   color: var(--highlight);
   background: transparent;
   border: 1px solid transparent;
+  animation: disable;
 }
 
 .nav-links a[aria-current="page"]::after {
