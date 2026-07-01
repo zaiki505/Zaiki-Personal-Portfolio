@@ -897,11 +897,11 @@ document.addEventListener("DOMContentLoaded", () => {
             setButtonState("is-success", "Message Sent!");
           } else {
             const data = await res.json().catch(() => ({}));
-            showStatus(data.error || "Something went wrong. Try emailing directly.", "error");
+            showStatus(data.error || "Something went wrong. Try emailing shamsulzire@gmail.com directly.", "error");
             setButtonState("is-error", "Failed to Send");
           }
         } catch {
-          showStatus("Network error. Try emailing shamsulzire@gmail.com directly.", "error");
+          showStatus("Network error. Try to reload the page or email shamsulzire@gmail.com directly.", "error");
           setButtonState("is-error", "Failed to Send");
         } finally {
           setTimeout(() => {
