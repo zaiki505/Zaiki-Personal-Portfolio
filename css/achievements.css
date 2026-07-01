@@ -1524,6 +1524,10 @@ body.light .status-desc {
 
 .contact-submit {
   justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
   border: none;
   border-radius: 8px;
   background: lab(from var(--lightFont) 100 a b);
@@ -1545,6 +1549,148 @@ body.light .status-desc {
   transform: translateY(-3px);
   box-shadow: 0 8px 18px rgba(255, 255, 255, 0.18);
   outline: none;
+}
+
+.contact-submit:disabled {
+  cursor: default;
+}
+
+.contact-submit.is-loading:hover,
+.contact-submit.is-success:hover,
+.contact-submit.is-error:hover {
+  transform: none;
+}
+
+.btn-spinner {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  display: none;
+  animation: btnSpin 0.65s linear infinite;
+}
+
+.contact-submit.is-loading .btn-spinner {
+  display: inline-block;
+}
+
+.contact-submit.is-loading {
+  cursor: progress;
+}
+
+@keyframes btnSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-check {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  display: none;
+}
+
+.btn-check path {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+}
+
+.contact-submit.is-success .btn-check {
+  display: inline-block;
+}
+
+.contact-submit.is-success .btn-check path {
+  animation: btnCheckDraw 0.4s ease 0.05s forwards;
+}
+
+@keyframes btnCheckDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.btn-error-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  display: none;
+}
+
+.btn-error-icon path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+}
+
+.contact-submit.is-error .btn-error-icon {
+  display: inline-block;
+}
+
+.contact-submit.is-error .btn-error-icon path {
+  animation: btnCheckDraw 0.35s ease 0.05s forwards;
+}
+
+.contact-submit.is-error {
+  animation: btnShake 0.4s ease;
+}
+
+@keyframes btnShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.contact-form input.is-invalid,
+.contact-form textarea.is-invalid {
+  border-color: #ff6b81;
+  box-shadow: 0 0 0 4px rgba(255, 23, 68, 0.14);
+}
+
+.field-error {
+  display: block;
+  min-height: 1.1em;
+  margin-top: -0.35rem;
+  color: #ff6b81;
+  font-size: 0.78rem;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.field-error.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-spinner {
+    animation: none;
+  }
+  .contact-submit.is-success .btn-check path,
+  .contact-submit.is-error .btn-error-icon path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .contact-submit.is-error {
+    animation: none;
+  }
 }
 
 .resume-download {
@@ -1953,5 +2099,45 @@ body.light .themebutton:active {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Solid, theme-independent success/error states — placed last to win over body.light .contact-submit */
+.contact-submit.is-success {
+  background: #34d399 !important;
+  color: #073b2c;
+  box-shadow: 0 8px 18px rgba(52, 211, 153, 0.35);
+  animation: btnSuccessPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.contact-submit.is-success .btn-check {
+  color: #073b2c;
+}
+
+.contact-submit.is-error {
+  background: #ff6b81 !important;
+  color: #4a0012;
+  box-shadow: 0 8px 18px rgba(255, 23, 68, 0.32);
+}
+
+.contact-submit.is-error .btn-error-icon {
+  color: #4a0012;
+}
+
+@keyframes btnSuccessPop {
+  0% {
+    transform: scale(0.94);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-submit.is-success {
+    animation: none;
+  }
 }
 

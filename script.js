@@ -785,26 +785,98 @@ document.addEventListener("DOMContentLoaded", () => {
         statusEl.classList.add("is-visible");
       };
 
+      const emailInput = document.getElementById("email");
+      const messageInput = document.getElementById("message");
+      const emailError = document.getElementById("email-error");
+      const messageError = document.getElementById("message-error");
+
+      const setFieldError = (input, errorEl, msg) => {
+        input.classList.toggle("is-invalid", !!msg);
+        if (!errorEl) return;
+        errorEl.textContent = msg || "";
+        errorEl.classList.toggle("is-visible", !!msg);
+      };
+
+      // `touched` gates the "required" message so we don't scold an empty field
+      // the user hasn't left yet - format errors still show live as they type.
+      const validateEmail = (touched) => {
+        const val = emailInput.value.trim();
+        if (!val) {
+          setFieldError(emailInput, emailError, touched ? "Email is required." : "");
+          return false;
+        }
+        const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        setFieldError(emailInput, emailError, ok ? "" : "Enter a valid email address.");
+        return ok;
+      };
+
+      const validateMessage = (touched) => {
+        const val = messageInput.value.trim();
+        if (!val) {
+          setFieldError(messageInput, messageError, touched ? "Message is required." : "");
+          return false;
+        }
+        const ok = val.length >= 10;
+        setFieldError(
+          messageInput,
+          messageError,
+          ok ? "" : `Message should be at least 10 characters (${val.length}/10).`
+        );
+        return ok;
+      };
+
+      emailInput.addEventListener("input", () => validateEmail(false));
+      emailInput.addEventListener("blur", () => validateEmail(true));
+      messageInput.addEventListener("input", () => validateMessage(false));
+      messageInput.addEventListener("blur", () => validateMessage(true));
+
+      const btn = contactForm.querySelector(".contact-submit");
+      const btnLabel = btn.querySelector(".btn-label");
+      const origLabel = btnLabel.textContent;
+
+      const setButtonState = (state, label) => {
+        btn.classList.remove("is-loading", "is-success", "is-error");
+        if (state) btn.classList.add(state);
+        btnLabel.textContent = label;
+      };
+
+      // Briefly flashes the error state without touching `disabled`, so the
+      // user can immediately correct the field and resubmit.
+      const flashFieldsError = () => {
+        setButtonState("is-error", "Check Fields");
+        setTimeout(() => setButtonState(null, origLabel), 2000);
+      };
+
       contactForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const message = document.getElementById("message").value.trim();
-        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const nameInput = document.getElementById("name");
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const message = messageInput.value.trim();
+        const emailOk = validateEmail(true);
+        const messageOk = validateMessage(true);
 
-        if (!name || !email || !message) {
+        if (!name) {
           showStatus("Please fill in all fields before sending.", "error");
+          nameInput.focus();
+          flashFieldsError();
           return;
         }
         if (!emailOk) {
-          showStatus("That email address doesn't look quite right.", "error");
+          showStatus("Please fix the highlighted fields before sending.", "error");
+          emailInput.focus();
+          flashFieldsError();
+          return;
+        }
+        if (!messageOk) {
+          showStatus("Please fix the highlighted fields before sending.", "error");
+          messageInput.focus();
+          flashFieldsError();
           return;
         }
 
-        const btn = contactForm.querySelector(".contact-submit");
-        const origText = btn.textContent;
+        setButtonState("is-loading", "Sending…");
         btn.disabled = true;
-        btn.textContent = "Sending…";
 
         try {
           const token = await new Promise((resolve) =>
@@ -820,15 +892,22 @@ document.addEventListener("DOMContentLoaded", () => {
           if (res.ok) {
             showStatus("Message sent! I'll get back to you soon.", "success");
             contactForm.reset();
+            setFieldError(emailInput, emailError, "");
+            setFieldError(messageInput, messageError, "");
+            setButtonState("is-success", "Message Sent!");
           } else {
             const data = await res.json().catch(() => ({}));
             showStatus(data.error || "Something went wrong. Try emailing directly.", "error");
+            setButtonState("is-error", "Failed to Send");
           }
         } catch {
           showStatus("Network error. Try emailing shamsulzire@gmail.com directly.", "error");
+          setButtonState("is-error", "Failed to Send");
         } finally {
-          btn.disabled = false;
-          btn.textContent = origText;
+          setTimeout(() => {
+            setButtonState(null, origLabel);
+            btn.disabled = false;
+          }, 2200);
         }
       });
     }

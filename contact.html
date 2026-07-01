@@ -139,6 +139,7 @@
               autocomplete="email"
               required
             />
+            <span class="field-error" id="email-error" aria-live="polite"></span>
 
             <label for="message">Message</label>
             <textarea
@@ -148,8 +149,36 @@
               minlength="10"
               required
             ></textarea>
+            <span class="field-error" id="message-error" aria-live="polite"></span>
 
-            <button type="submit" class="contact-submit">Send Email</button>
+            <button type="submit" class="contact-submit">
+              <span class="btn-spinner" aria-hidden="true"></span>
+              <svg
+                class="btn-check"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12.5l5 5L20 6" />
+              </svg>
+              <svg
+                class="btn-error-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+              <span class="btn-label">Send Email</span>
+            </button>
 
             <p class="recaptcha-notice">
               This site is protected by reCAPTCHA. Google's
