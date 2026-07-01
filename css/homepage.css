@@ -362,6 +362,36 @@ body.light .hero-noise {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
+/* Card-edge divider */
+.hero-card-edge {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #141418;
+  background: lab(from var(--dark) 12 a b);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 3;
+  pointer-events: none;
+  transition: height 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-card-edge.peeking {
+  height: 32px;
+}
+
+.hero-card-edge.expanded {
+  height: 56px;
+}
+
+body.light .hero-card-edge {
+  background: lab(from var(--light) 97 a b);
+  border-top-color: rgba(0, 0, 0, 0.07);
+}
+
 /* --- Bento About Grid --- */
 
 .bento-section {

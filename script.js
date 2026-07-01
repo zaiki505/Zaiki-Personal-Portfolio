@@ -185,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.appendChild(scrollTopBtn);
 
   let aboutMorph = null;
+  let heroCardEdge = null;
   let atTop = true;
 
   // Adaptive nav text colour: sample the luminance of the content just under the
@@ -282,6 +283,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const onScroll = () => {
     scrollTopBtn.classList.toggle("is-visible", window.scrollY > 400);
     updateHeaderContrast();
+    heroCardEdge ??= document.querySelector(".hero-card-edge");
+    heroCardEdge?.classList.toggle("peeking", window.scrollY > 20);
     const nowTop = window.scrollY <= 2;
     if (nowTop && !atTop) resetOnTop();
     atTop = nowTop;
@@ -441,6 +444,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const squares = Array.from(peek.querySelectorAll(".peek-card"));
     const cards = Array.from(about.querySelectorAll(".bento-card"));
     if (!squares.length || squares.length !== cards.length) return;
+    const cardEdge = document.querySelector(".hero-card-edge");
 
     let morphed = false;
     let revealTimer = null;
@@ -575,8 +579,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (morphed) return;
       if (window.scrollY < 40 && performance.now() - lastResetT < 400) return;
       morphed = true;
+      cardEdge?.classList.add("expanded");
       peek.classList.add("peek-morphing");
       positionOnAbout(true);
+      setTimeout(() => about.scrollIntoView({ behavior: "smooth", block: "center" }), 250);
       clearTimeout(revealTimer);
 
       revealTimer = setTimeout(() => {
@@ -590,6 +596,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const reset = () => {
       if (!morphed) return;
       morphed = false;
+      cardEdge?.classList.remove("expanded");
       lastResetT = performance.now();
       clearTimeout(revealTimer);
       about.classList.remove("about-revealed");
@@ -608,7 +615,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (entry.isIntersecting) doMorph();
         });
       },
-      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0, rootMargin: "0px 0px -20% 0px" }
     );
     io.observe(about);
 
