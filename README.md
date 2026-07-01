@@ -2,8 +2,9 @@
 
 A clean, responsive personal portfolio built with plain HTML, CSS, and JavaScript (no frameworks, no build tools). Designed to showcase my work, academic background, and technical skills as a computing student specialising in interactive media.
 
-**Live site -> [zaiki505.github.io/Zaiki-Personal-Portfolio](https://zaiki505.github.io/Zaiki-Personal-Portfolio)**
+**Live site -> [zaiki.netlify.app](https://zaiki.netlify.app/)**
 
+**Site Status -> [![Netlify Status](https://api.netlify.com/api/v1/badges/bd986a5e-03e2-499e-9d3c-d214f7fec15f/deploy-status)](https://app.netlify.com/projects/zaiki/deploys)**
 
 ## Overview
 
