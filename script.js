@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ==================== URL helpers ==================== */
   const normPath = (href) => {
     let p = new URL(href, location.href).pathname;
-    p = p.replace(/index\.html$/, "");
+    p = p.replace(/\/index\.html$/, "/").replace(/\.html$/, "");
     return p === "" ? "/" : p;
   };
 
@@ -343,8 +343,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = normPath(href);
    
     let activePath = target;
-    if (target.startsWith("/projects/")) activePath = "/projects.html";
-    else if (target === "/resume.html") activePath = "/about.html";
+    if (target.startsWith("/projects/")) activePath = "/projects";
+    else if (target === "/resume") activePath = "/about";
     navList?.querySelectorAll("a").forEach((a) => {
       const ap = normPath(a.href);
       const isActive = ap === activePath;
@@ -1051,8 +1051,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("spa-active");
 
     let html;
+    let res;
     try {
-      const res = await fetch(href);
+      res = await fetch(href);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       html = await res.text();
     } catch (err) {
@@ -1080,10 +1081,11 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     document.title = doc.title || document.title;
-    if (push) history.pushState({ spa: true }, "", href);
-    currentPath = normPath(href);
+    const finalHref = res.url || href;
+    if (push) history.pushState({ spa: true }, "", finalHref);
+    currentPath = normPath(finalHref);
 
-    setActiveNav(href);
+    setActiveNav(finalHref);
     updatePill(true);
     initPageFeatures();
     closeMenu();
@@ -1109,7 +1111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = new URL(link.href, location.href);
     if (url.origin !== location.origin) return;
 
-    const isHtml = url.pathname.endsWith(".html") || url.pathname.endsWith("/");
+    const lastSeg = url.pathname.split("/").pop();
+    const isHtml = url.pathname.endsWith("/") || lastSeg.endsWith(".html") || !lastSeg.includes(".");
     if (!isHtml) return;
 
     if (normPath(url.href) === currentPath && url.hash) return;
