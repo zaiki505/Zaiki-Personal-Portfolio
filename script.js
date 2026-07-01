@@ -1048,7 +1048,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const navigateTo = async (href, push) => {
     const token = ++navToken;
-    document.body.classList.add("spa-active");
 
     let html;
     let res;
@@ -1072,13 +1071,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     absolutize(incoming, href);
     const imported = document.importNode(incoming, true);
-    imported.classList.add("page-enter");
     current.replaceWith(imported);
-    imported.addEventListener(
-      "animationend",
-      () => imported.classList.remove("page-enter"),
-      { once: true }
-    );
 
     document.title = doc.title || document.title;
     const finalHref = res.url || href;
