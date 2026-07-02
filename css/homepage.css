@@ -1097,12 +1097,12 @@ body.light .contact-pill:hover {
   }
 
   .themebutton[data-theme-icon="moon"]::before {
-    content: "🌙";
+    content: "☀️";
     transition: content 0.5s ease;
   }
 
   .themebutton[data-theme-icon="sun"]::before {
-    content: "☀️";
+    content: "🌙";
     transition: content 0.5s ease;
   }
 
