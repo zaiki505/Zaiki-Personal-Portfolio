@@ -34,7 +34,7 @@
   letter-spacing: 0.02em;
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
-  
+
   background: rgba(167, 84, 255, 0.16);
   border: 1px solid rgba(167, 84, 255, 0.3);
   color: var(--highlight);
@@ -184,7 +184,6 @@
   color: #ff6b81;
 }
 
-
 /* ==================== HERO PEEK + ABOUT SEAMLESS MORPH ==================== */
 /* Three mini cards, styled identically to the About bento cards, sit fanned at
    the bottom of the hero (only their tops peek). When the About section is about
@@ -209,7 +208,11 @@ body:not(.exit) main > .scroll-peek {
 .peek-card {
   position: absolute; /* anchored to <main> (.home-page); geometry set in JS, matched to the About bento cards */
   background:
-    radial-gradient(circle at 80% 20%, rgba(167, 84, 255, 0.1), transparent 55%),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(167, 84, 255, 0.1),
+      transparent 55%
+    ),
     rgba(0, 0, 0, 0.38);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
@@ -228,6 +231,7 @@ body:not(.exit) main > .scroll-peek {
     width 0.7s cubic-bezier(0.5, 0, 0.2, 1),
     height 0.7s cubic-bezier(0.5, 0, 0.2, 1),
     transform 0.7s cubic-bezier(0.5, 0, 0.2, 1),
+    translate 0.7s cubic-bezier(0.5, 0, 0.2, 1),
     opacity 0.4s ease,
     filter 0.55s ease,
     border-color 0.3s ease;
@@ -249,22 +253,51 @@ body:not(.exit) main > .scroll-peek {
     filter: blur(0);
   }
 }
-body:not(.exit) .scroll-peek .peek-card {
-  animation: peekIntro 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-body:not(.exit) .scroll-peek .peek-card:nth-child(2) {
-  animation-delay: 0.5s;
-}
-body:not(.exit) .scroll-peek .peek-card:nth-child(1) {
-  animation-delay: 0.6s;
-}
-body:not(.exit) .scroll-peek .peek-card:nth-child(3) {
-  animation-delay: 0.64s;
+
+/* Runs on `margin-top` (NOT translate/transform) so it stacks cleanly with peekIntro's
+   `translate` rise and the JS-set `transform: rotate()` */
+@keyframes peekCardBob {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -9px;
+  }
 }
 
-/* Soft blur while the deck morphs into / back out of the About cards, so the
-   handoff reads as motion rather than a hard slide. Transitions via the `filter`
-   entry above; clears when `peek-morphing` is removed after the reset. */
+/* Load entrance + idle bob declared TOGETHER in a single rule that is never
+   toggled or swapped. peekIntro plays once on load, peekCardBob loops forever.*/
+body:not(.exit) .scroll-peek .peek-card {
+  animation:
+    peekIntro 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) backwards,
+    peekCardBob 3.4s ease-in-out infinite;
+}
+
+/* Per-card delays are [peekIntro, peekCardBob].The negative bob delays
+   give each card a different float phase so they don't bob in lockstep. */
+body:not(.exit) .scroll-peek .peek-card:nth-child(2) {
+  animation-delay:
+    0.3s,
+    -1.7s;
+}
+body:not(.exit) .scroll-peek .peek-card:nth-child(1) {
+  animation-delay:
+    0.75s,
+    -0.6s;
+}
+body:not(.exit) .scroll-peek .peek-card:nth-child(3) {
+  animation-delay:
+    0.65s,
+    -2.5s;
+}
+
+/* During the morph, drop ONLY the bob and clear the bob's margin so each card lands exactly on its About card. */
+body:not(.exit) .scroll-peek.peek-morphing .peek-card {
+  animation-name: peekIntro, none;
+  margin-top: 0;
+}
+
 .scroll-peek.peek-morphing .peek-card {
   filter: blur(6px);
 }
@@ -315,7 +348,7 @@ body.light .peek-card {
 }
 
 body.light .peek-card::after {
-  background: lab(from var(--light) 90 a b)
+  background: lab(from var(--light) 90 a b);
 }
 
 /* Crossfade: once a peek card has landed on its About card, it fades out as the
@@ -486,13 +519,13 @@ footer.site-footer {
   fill: var(--highlight);
 }
 .cat-eye-white {
-  fill: #fff;
+  fill: #ffffff;
 }
 .cat-pupil {
   fill: #1c1c1c;
 }
 .cat-nose {
-  fill: #ff8fcf;
+  fill: #db68d7;
 }
 .cat-mouth {
   fill: none;

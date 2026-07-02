@@ -362,34 +362,121 @@ body.light .hero-noise {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
-/* Card-edge divider */
+/* Card-edge divider. */
 .hero-card-edge {
   position: absolute;
   bottom: -1px;
   left: 0;
   right: 0;
   height: 5px;
-  background: #141418;
-  background: lab(from var(--dark) 12 a b);
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
   z-index: 3;
   pointer-events: none;
-  transition: height 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  box-shadow: 0 -10px 24px rgba(0, 0, 0, 0);
+  transition:
+    height 0.6s ease-in-out,
+    box-shadow 0.6s ease-in-out;
+}
+
+/* Frosted layer: blurs the hero content sitting behind the strip's top edge. */
+.hero-card-edge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(20, 20, 24, 0.35);
+  pointer-events: none;
+}
+
+.hero-card-edge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #141418;
+  background: lab(from var(--dark) 12 a b);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 65%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 65%);
+  pointer-events: none;
 }
 
 .hero-card-edge.peeking {
   height: 32px;
+  box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .hero-card-edge.expanded {
   height: 56px;
+  box-shadow: 0 -14px 32px rgba(0, 0, 0, 0.42);
 }
 
-body.light .hero-card-edge {
+body.light .hero-card-edge::after {
   background: lab(from var(--light) 97 a b);
+}
+
+body.light .hero-card-edge::before {
   border-top-color: rgba(0, 0, 0, 0.07);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+body.light .hero-card-edge.peeking {
+  box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.16);
+}
+
+body.light .hero-card-edge.expanded {
+  box-shadow: 0 -14px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Scroll-down hint - only visible while peeking, gone the instant the
+   card edge expands into the About morph/snap. */
+.scroll-hint {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--highlight);
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.hero-card-edge.peeking:not(.expanded) .scroll-hint {
+  opacity: 0.85;
+}
+
+.scroll-hint-arrow {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  animation: scrollHintBounce 1.4s ease-in-out infinite;
+}
+
+@keyframes scrollHintBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint-arrow {
+    animation: none;
+  }
 }
 
 /* --- Bento About Grid --- */

@@ -188,6 +188,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let heroCardEdge = null;
   let atTop = true;
 
+  let suppressAboutSnap = false;
+  let suppressAboutSnapTimer = null;
+
+  // Tracks how fast the user is scrolling so the About auto-snap only engages for slow/deliberate scrolls
+  let lastScrollY = window.scrollY;
+  let lastScrollT = performance.now();
+  let scrollVelocity = 0; // smoothed px/ms
+  const FAST_SCROLL_PX_PER_MS = 1.8;
+
   // Adaptive nav text colour: sample the luminance of the content just under the
   // header and flip the nav between light/dark text so it stays readable over
   // whatever is scrolling behind the (translucent) pill. Thanks to internet.
@@ -281,6 +290,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (aboutMorph) aboutMorph.reset();
   };
   const onScroll = () => {
+    const now = performance.now();
+    const y = window.scrollY;
+    const dt = now - lastScrollT;
+    if (dt > 4) {
+      const instVel = Math.abs(y - lastScrollY) / dt;
+      scrollVelocity = scrollVelocity * 0.7 + instVel * 0.3;
+    }
+    lastScrollY = y;
+    lastScrollT = now;
+
     scrollTopBtn.classList.toggle("is-visible", window.scrollY > 400);
     updateHeaderContrast();
     heroCardEdge ??= document.querySelector(".hero-card-edge");
@@ -312,6 +331,29 @@ document.addEventListener("DOMContentLoaded", () => {
     if (target) {
       event.preventDefault();
       target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+
+  // Any same-page link heading somewhere other than About suppresses the About
+  // auto-snap for the duration of that scroll, so it doesn't get yanked
+  // back up to About mid-transit.
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+    const hash = link.getAttribute("href");
+    if (!hash || hash.length < 2 || hash === "#about") return;
+    if (!document.querySelector(hash)) return;
+
+    suppressAboutSnap = true;
+    clearTimeout(suppressAboutSnapTimer);
+    const clearSuppress = () => {
+      suppressAboutSnap = false;
+    };
+    if ("onscrollend" in window) {
+      window.addEventListener("scrollend", clearSuppress, { once: true });
+      suppressAboutSnapTimer = setTimeout(clearSuppress, 3000);
+    } else {
+      suppressAboutSnapTimer = setTimeout(clearSuppress, 1200);
     }
   });
 
@@ -432,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Hero peek -> About SEAMLESS morph (hopefully). The three peek cards are absolutely positioned in <main> (document space). When the About section is about to be
-  // seen, each peek card animates its exact box until it lands on its matching About card. then a crossfade hands off to the real card. 
+  // seen, each peek card animates its exact box until it lands on its matching About card. then a crossfade hands off to the real card.
   // Because both live in document space, the morph stays locked to the cards even while scrolling. Resets at the very top.
   // ggs broder..
   const setupAboutMorph = () => {
@@ -563,7 +605,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     let placed = false;
-    let lastResetT = 0;
+    // Seeded to setup time (not 0) so a stray early IntersectionObserver
+    // callback during initial layout/font-swap right after a reload, before the page settled
+    let lastResetT = performance.now();
     const measure = (animate) => {
       computeRest();
       if (morphed) {
@@ -577,12 +621,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const doMorph = () => {
       if (morphed) return;
-      if (window.scrollY < 40 && performance.now() - lastResetT < 400) return;
+      if (window.scrollY < 40 && performance.now() - lastResetT < 900) return;
       morphed = true;
       cardEdge?.classList.add("expanded");
       peek.classList.add("peek-morphing");
       positionOnAbout(true);
-      setTimeout(() => about.scrollIntoView({ behavior: "smooth", block: "center" }), 250);
+      if (!suppressAboutSnap && scrollVelocity < FAST_SCROLL_PX_PER_MS) {
+        setTimeout(() => {
+          // Re-check right before snapping: if the user has since scrolled past About entirely, leave them alone instead of yanking them back.
+          if (about.getBoundingClientRect().bottom < 0) return;
+          about.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 250);
+      }
       clearTimeout(revealTimer);
 
       revealTimer = setTimeout(() => {
