@@ -15,7 +15,7 @@
   justify-content: center;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: clamp(5rem, 12vw, 9rem) clamp(1rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
+  padding: 5rem clamp(1rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
   background: #141418; /* fallback for browsers without relative lab() */
   background:
     radial-gradient(
