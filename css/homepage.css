@@ -753,6 +753,11 @@ body.light .hero-card-edge.expanded {
   border-color: rgba(16, 185, 129, 0.34);
   color: #44d6a7;
 }
+.tag-mobile {
+  background: rgba(236, 72, 153, 0.14);
+  border-color: rgba(236, 72, 153, 0.34);
+  color: #f78ac4;
+}
 
 body.light .tag-web {
   background: rgba(59, 158, 255, 0.12);
@@ -773,6 +778,11 @@ body.light .tag-personal {
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.42);
   color: #0b8a63;
+}
+body.light .tag-mobile {
+  background: rgba(236, 72, 153, 0.12);
+  border-color: rgba(236, 72, 153, 0.42);
+  color: #be2d7e;
 }
 
 .project-details h4 {

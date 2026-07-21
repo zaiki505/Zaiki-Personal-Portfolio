@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CarPawl - zaiki</title>
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/education.css" />
+    <link rel="stylesheet" href="../css/achievements.css" />
+    <link rel="stylesheet" href="../css/homepage.css" />
+    <link rel="stylesheet" href="../css/projects.css" />
+    <link rel="stylesheet" href="../css/skills.css" />
+    <link rel="stylesheet" href="../css/misc.css" />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <a data-no-squish href="../index.html">
+            <img class="logo-img" src="../assets/logo.jpeg" alt="zaiki" />
+            <span class="logo-text">zaiki's Portfolio</span>
+          </a>
+        </div>
+        <ul class="nav-links">
+          <li><a href="../about.html">About Me</a></li>
+          <li><a href="../education.html">Education</a></li>
+          <li><a href="../projects.html" aria-current="page">Projects</a></li>
+          <li><a href="../qualities.html">Skills</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button data-no-squish id="theme-toggle" class="themebutton">
+            <span class="label">Theme</span>
+          </button>
+          <button
+            id="mobile-menu-toggle"
+            class="menubutton"
+            aria-label="Toggle Menu"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line class="middle-line" x1="3" y1="12" x2="21" y2="12"></line>
+              <line class="top-line" x1="3" y1="6" x2="21" y2="6"></line>
+              <line class="bottom-line" x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="screen-top-blur"></div>
+
+    <main class="case-study-page">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="../projects.html">Projects</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">CarPawl</span>
+      </nav>
+
+      <section class="case-hero">
+        <p class="section-kicker">React PWA &amp; Native Android App</p>
+        <h1>CarPawl: Offline-First Carpool Fuel Tracker</h1>
+        <p>
+          Tracking fuel fill-ups and fairly splitting carpool costs between
+          passengers, running fully on-device with no backend and no account
+          required.
+        </p>
+      </section>
+
+      <section class="case-layout case-layout-stacked">
+        <div
+          class="media-frame media-platform media-portrait"
+          aria-label="CarPawl Application Screenshots"
+        >
+          <span
+            ><img
+              src="../assets/CarPawl/carpawl-dashboard.webp"
+              alt="CarPawl Dashboard"
+              loading="lazy"
+          /></span>
+          <span
+            ><img
+              src="../assets/CarPawl/carpawl-split.webp"
+              alt="CarPawl Trip Cost Split"
+              loading="lazy"
+          /></span>
+          <span
+            ><img
+              src="../assets/CarPawl/carpawl-history.webp"
+              alt="CarPawl Spending History"
+              loading="lazy"
+          /></span>
+        </div>
+
+        <div class="case-panel">
+          <h2>Project Overview</h2>
+          <p>
+            CarPawl solves a simple problem: figuring out who owes what after a
+            shared car ride. Log fuel fill-ups by cost, litres, or distance,
+            then split each trip by distance, equally, or with custom rules. It
+            keeps a running balance so you always know who owes who. Everything
+            is stored locally with Dexie (IndexedDB), so it works offline and
+            keeps no personal data on a server. Available as an installable PWA
+            and a native Android app via Capacitor. Optional Google Drive sync
+            backs up your data and keeps devices in sync, with proper handling
+            for deletions and conflicts.
+          </p>
+          <dl class="meta-list">
+            <div>
+              <dt>Role</dt>
+              <dd>Sole Developer &amp; Designer</dd>
+            </div>
+            <div>
+              <dt>Tools</dt>
+              <dd>
+                <div class="meta-tools-tags">
+                  <span class="meta-tool-tag">React 18</span>
+                  <span class="meta-tool-tag">Vite</span>
+                  <span class="meta-tool-tag">Dexie</span>
+                  <span class="meta-tool-tag">IndexedDB</span>
+                  <span class="meta-tool-tag">Capacitor 8</span>
+                  <span class="meta-tool-tag">Recharts</span>
+                  <span class="meta-tool-tag">Vitest</span>
+                </div>
+              </dd>
+            </div>
+            <div>
+              <dt>Duration</dt>
+              <dd>Personal Project - Ongoing</dd>
+            </div>
+            <div>
+              <dt>Live Demo</dt>
+              <dd>
+                <a
+                  class="external-link"
+                  href="https://carpawl.netlify.app/"
+                  target="_blank"
+                  >Open the Live App</a
+                >
+              </dd>
+            </div>
+            <div>
+              <dt>Project GitHub</dt>
+              <dd>
+                <a
+                  class="external-link"
+                  href="https://github.com/zaiki505/CarPawl-Carpool-Fuel-Tracker"
+                  target="_blank"
+                  >View GitHub Repo</a
+                >
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Key Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Flexible Fuel Logging</strong>
+              <span
+                >Record fill-ups by cost, litres, or distance travelled</span
+              >
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Three Split Modes</strong>
+              <span
+                >Distance-weighted, equal, or a custom pool with maintenance
+                markup</span
+              >
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Recurring Trips &amp; Prepay</strong>
+              <span
+                >Daily to yearly trips auto-schedule, with advance payments held
+                until the date arrives</span
+              >
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Google Drive Sync</strong>
+              <span
+                >Keeps your data backed up and synced across devices, with safe
+                conflict handling.</span
+              >
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Offline-First Storage</strong>
+              <span>Dexie and IndexedDB, fully functional with no network</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-body">
+              <strong>Native Android Build</strong>
+              <span
+                >Capacitor 8 shell with haptics, biometric lock, and local
+                notifications</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Technologies &amp; Concepts</h2>
+        <div class="tech-concept-grid">
+          <div class="tech-concept-item">
+            <span class="concept-label">Offline-First Architecture</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label"
+              >Last-Write-Wins Sync with Tombstones</span
+            >
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">Progressive Web App</span>
+          </div>
+          <div class="tech-concept-item">
+            <span class="concept-label">Capacitor Native Bridge</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="hci-panel">
+        <h2>Learning Outcomes</h2>
+        <div class="outcome-tags">
+          <span class="outcome-tag">React Hooks</span>
+          <span class="outcome-tag">IndexedDB / Dexie</span>
+          <span class="outcome-tag">OAuth 2.0 &amp; Drive REST</span>
+          <span class="outcome-tag">Conflict Resolution</span>
+          <span class="outcome-tag">Capacitor / Android</span>
+          <span class="outcome-tag">Vitest Unit Testing</span>
+        </div>
+      </section>
+
+      <div class="back-link-container">
+        <a class="back-link" href="../projects.html">Back to Projects</a>
+      </div>
+    </main>
+
+    <footer>
+      <small>&copy; 2026 zaiki. All rights reserved.</small>
+    </footer>
+
+    <script src="../script.js"></script>
+  </body>
+</html>

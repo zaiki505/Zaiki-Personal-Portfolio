@@ -819,6 +819,41 @@ body.light .milestone-text span {
   gap: 1rem;
 }
 
+/* Portrait phone screenshots sit side by side with a capped height. */
+.media-platform.media-portrait {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(0.7rem, 2vw, 1.4rem);
+}
+
+.media-platform.media-portrait span {
+  display: flex;
+  justify-content: center;
+  background: none;
+  border: none;
+}
+
+.media-platform.media-portrait img {
+  width: auto;
+  max-width: 100%;
+  max-height: 520px;
+  border-radius: 10px;
+
+}
+
+.case-layout.case-layout-stacked {
+  grid-template-columns: 1fr;
+}
+
+.case-layout.case-layout-stacked .media-frame {
+  min-height: 0;
+}
+
+.case-layout-stacked .meta-list {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.75rem 2rem;
+}
+
 .case-panel,
 .hci-panel {
   padding: clamp(1.1rem, 3vw, 2rem);
