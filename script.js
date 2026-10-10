@@ -202,29 +202,52 @@ document.addEventListener("DOMContentLoaded", () => {
   // whatever is scrolling behind the (translucent) pill. Thanks to internet.
   const headerEl = document.querySelector("header");
   
-  const _lumCanvas = document.createElement("canvas");
-  _lumCanvas.width = _lumCanvas.height = 1;
-  const _lumCtx = _lumCanvas.getContext("2d", { willReadFrequently: true });
-  
+  // Drawing a cross-origin image taints a canvas PERMANENTLY - every later
+  // getImageData() on it throws. So: never draw cross-origin images, and if the
+  // canvas ever does get tainted, throw it away and start a fresh one.
+  let _lumCanvas, _lumCtx;
+  const resetLumCanvas = () => {
+    _lumCanvas = document.createElement("canvas");
+    _lumCanvas.width = _lumCanvas.height = 1;
+    _lumCtx = _lumCanvas.getContext("2d", { willReadFrequently: true });
+  };
+  resetLumCanvas();
+
   const colourLum = (c) => {
     if (!c) return null;
-    _lumCtx.clearRect(0, 0, 1, 1);
-    _lumCtx.fillStyle = c;
-    _lumCtx.fillRect(0, 0, 1, 1);
-    const d = _lumCtx.getImageData(0, 0, 1, 1).data;
-    if (d[3] < 30) return null;
-    return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255;
+    try {
+      _lumCtx.clearRect(0, 0, 1, 1);
+      _lumCtx.fillStyle = c;
+      _lumCtx.fillRect(0, 0, 1, 1);
+      const d = _lumCtx.getImageData(0, 0, 1, 1).data;
+      if (d[3] < 30) return null;
+      return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255;
+    } catch (e) {
+      resetLumCanvas();
+      return null;
+    }
+  };
+
+  // file:// pages have an opaque origin, so every image counts as cross-origin.
+  const isSameOriginImg = (img) => {
+    if (location.protocol === "file:") return false;
+    try {
+      return new URL(img.currentSrc || img.src, location.href).origin === location.origin;
+    } catch (e) {
+      return false;
+    }
   };
 
   const imgLum = (img) => {
+    if (!img.complete || img.naturalWidth === 0 || !isSameOriginImg(img)) return null;
     try {
-      if (!img.complete || img.naturalWidth === 0) return null;
       _lumCtx.clearRect(0, 0, 1, 1);
       _lumCtx.drawImage(img, 0, 0, 1, 1);
       const d = _lumCtx.getImageData(0, 0, 1, 1).data;
       if (d[3] < 30) return null;
       return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255;
     } catch (e) {
+      resetLumCanvas();
       return null;
     }
   };
@@ -247,14 +270,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const r = headerEl.getBoundingClientRect();
     const y = r.top + r.height * 0.5;
 
+    // Temporarily let elementFromPoint see THROUGH the header. The restore MUST
+    // be in `finally` - if anything throws in between, the header (and the nav
+    // inside it) would otherwise be left permanently unclickable.
     headerEl.style.pointerEvents = "none";
     let lums = [];
-    for (const f of [0.2, 0.35, 0.5, 0.65, 0.8]) {
-      const el = document.elementFromPoint(r.left + r.width * f, y);
-      if (!el) continue;
-      lums.push(bgLuminance(el));
+    try {
+      for (const f of [0.2, 0.35, 0.5, 0.65, 0.8]) {
+        const el = document.elementFromPoint(r.left + r.width * f, y);
+        if (!el) continue;
+        lums.push(bgLuminance(el));
+      }
+    } finally {
+      headerEl.style.pointerEvents = "";
     }
-    headerEl.style.pointerEvents = "";
     if (!lums.length) return;
 
     const isLight = document.body.classList.contains("light");
